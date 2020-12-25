@@ -2,18 +2,13 @@
   <div
     class="mHomeBox fade-in-home"
     :style="{
-      background: `${splash ? 'rgb(80, 80, 80)' : ''}`,
-      backgroundImage: `url(${
-        !splash
-          ? 'https://endorphinoutdoor.com/wp-content/uploads/2020/10/crinale_drone-1-scaled.jpg'
-          : ''
-      })`,
+      background: `${splash ? 'rgb(80, 80, 80)' : '#0076ff'}`,
     }"
   >
     <!-- splash -->
     <!-- <div v-if="splash" class="splash pulsate-fwd">METAMORPHOSI</div> -->
     <div v-if="splash" class="canvasBoxBabylon">
-      <div class="splashText pulsate-fwd">FrozenShots</div>
+      <div class="splashText">FrozenShots</div>
       <!-- <Scene>
         <Property name="clearColor" color="#505050"></Property>
         <Camera
@@ -75,12 +70,12 @@
       </Scene> -->
     </div>
 
-    <!-- desktop tripartition -->
     <div v-if="!splash" class="mHome fade-in-home">
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
 
-      <div class="mTripartition">
+      <!-- desktop tripartition -->
+      <!-- <div class="mTripartition">
         <div
           class="mTrip m1 mTripSx"
           :class="[
@@ -159,14 +154,12 @@
             <div class="mLine mLineDx"></div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- mobile tripartition -->
 
       <div class="mTripartitionMobile">
-        <div class="mTripMobile" @click="pushAboutM">WE ARE</div>
-        <div class="mTripMobile" @click="pushContentsM">WE DO</div>
-        <div class="mTripMobile" @click="pushBlogM">WE TELL</div>
+        <div class="mTripMobile" @click="pushAboutM">freeze your moments</div>
       </div>
     </div>
   </div>
@@ -327,7 +320,7 @@ export default {
   width: 100vw;
   height: 100vh;
   z-index: 8100;
-  background: rgba(155, 155, 155, 0.589);
+  // background: rgba(155, 155, 155, 0.589);
 }
 .mBackgroundOverlay {
   position: absolute;
@@ -541,15 +534,34 @@ export default {
 }
 
 .mTripartitionMobile {
-  display: none;
+  display: flex;
   position: absolute;
   top: 100px;
   width: 100vw;
   height: calc(100vh - 100px);
   z-index: 9996;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
+  .mTripMobile {
+    color: white;
+    font-weight: bold;
+    font-size: 45px;
+    cursor: pointer;
+    border: 0.5px solid white;
+    border-radius: 150px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    transition: 1s;
+
+    &:hover {
+      background: grey;
+      transition: 1s;
+    }
+  }
 }
 .hide {
   display: none !important;
@@ -581,21 +593,6 @@ export default {
 @media (max-width: 1050px) {
   .mTripartition {
     display: none;
-  }
-  .mTripartitionMobile {
-    display: flex;
-  }
-  .mTripMobile {
-    color: white;
-    font-weight: bold;
-    font-size: 45px;
-    cursor: pointer;
-    border-bottom: 0.5px solid white;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 33%;
   }
 }
 @media (max-width: 600px) {

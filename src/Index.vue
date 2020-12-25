@@ -21,7 +21,7 @@
             </router-link>
           </div>
           <router-link :to="{ name: 'mHome' }" class="mTopEl mLogo">
-            <div style="color: red">中文</div>
+            <div style="color: blue">FrozenShots</div>
           </router-link>
           <div class="mTopEl mMenu" :class="[{ colorBlack: notHome }]">
             <div
@@ -115,10 +115,10 @@
                   CONTACTS
                 </div>
               </router-link>
-              <!-- <div class="menuElDivider">/</div> -->
+              <div class="menuElDivider">/</div>
 
               <!-- login -->
-              <!-- <router-link
+              <router-link
                 v-if="!isLoggedIn"
                 :to="{ name: 'login' }"
                 class="menuEl"
@@ -134,10 +134,10 @@
                 >
                   Login
                 </div>
-              </router-link> -->
+              </router-link>
 
               <!-- logout -->
-              <!-- <router-link
+              <router-link
                 v-if="isLoggedIn"
                 :to="{ name: 'mHome' }"
                 class="menuEl"
@@ -154,9 +154,9 @@
                 </div>
               </router-link>
               <div class="menuElDivider" v-if="isLoggedIn">/</div>
-              -->
+
               <!-- settings -->
-              <!--
+
               <router-link
                 v-if="isLoggedIn"
                 :to="{ name: 'userProfile' }"
@@ -173,7 +173,7 @@
                 >
                   Settings
                 </div>
-              </router-link> -->
+              </router-link>
               <!--  -->
             </div>
             <div
@@ -254,6 +254,7 @@ import * as easings from "vuetify/es5/services/goto/easing-patterns";
 import axios from "axios";
 import firebase from "firebase";
 import store from "./store";
+import { db } from "./main";
 
 export default {
   // this can be used alternatively to the meta in the head of welcome.blade.php page, for seo purpose
@@ -291,8 +292,20 @@ export default {
     setTimeout(() => {
       this.loaded = true;
     }, 2000);
+
+    // firestore connection test
+    this.dbTestCall();
   },
   methods: {
+    async dbTestCall() {
+      db.collection("env")
+        .get()
+        .then((querySnapshot) => {
+          const documents = querySnapshot.docs.map((doc) => doc.data());
+          // do something with documents
+          console.log(documents);
+        });
+    },
     onClickOutsideSideBar() {
       this.$store.commit("closeMenu");
     },
@@ -454,11 +467,11 @@ export default {
 .menuOpen {
   position: fixed;
   top: 40px;
-  right: -350px;
+  right: -450px;
   transition: 0.5s;
   display: flex;
   justify-content: space-between;
-  width: 350px;
+  width: 400px;
 }
 .showMenu {
   transition: 0.5s;
