@@ -17,8 +17,7 @@ import MShop from "./components/metamorphosis/MShop.vue";
 import MContacts from "./components/metamorphosis/MContacts.vue";
 import MBlogPost from "./components/metamorphosis/MBlogPost.vue";
 import MSingleWork from "./components/metamorphosis/MSingleWork.vue";
-
-
+import MFilters from "./components/metamorphosis/MFilters.vue";
 
 
 
@@ -55,6 +54,16 @@ const routes = [
         path: "/",
         component: MHome,
         name: "mHome",
+        // protezione della rotta se non loggato
+        // beforeEnter: (to, from, next) => {
+        //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })
+        //     else next()
+        // }
+    },
+    {
+        path: "/select",
+        component: MFilters,
+        name: "mFIlters",
         // protezione della rotta se non loggato
         // beforeEnter: (to, from, next) => {
         //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })
