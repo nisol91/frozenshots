@@ -1,8 +1,8 @@
 <template>
   <div
-    class="mHomeBox fade-in-home"
+    class="mFiltersBox fade-in-home"
     :style="{
-      background: `${splash ? 'rgb(80, 80, 80)' : '#0076ff'}`,
+      height: `${splash ? '100vh' : '800px'}`,
     }"
   >
     <!-- splash -->
@@ -10,21 +10,90 @@
       <div class="splashText">FrozenShots</div>
     </div>
 
-    <div v-if="!splash" class="mHome fade-in-home">
+    <div v-if="!splash" class="mFilters fade-in-home">
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
       <div class="mSelectFilters">
-        <div class="mSelectBtn" :to="{ name: 'mFilters' }">
+        <div class="mSelectBtn" @click="datePicker = !datePicker">
           <div class="">select date</div>
         </div>
-        <div class="mSelectBtn" :to="{ name: 'mFilters' }">
+        <div v-if="dateValue" class="mSelectedValue">
+          <div class="">{{ dateValue }}</div>
+        </div>
+        <div class="mSelectBtn" @click="spotPickerToggle = !spotPickerToggle">
           <div class="">select spot</div>
         </div>
-        <div class="mSelectBtn" :to="{ name: 'mFilters' }">
-          <div class="">select hour</div>
+        <div v-if="dateValue" class="mSelectedValue">
+          <div class="">{{ dateValue }}</div>
+        </div>
+        <div class="mSelectBtn" @click="timePickerToggle = !timePickerToggle">
+          <div class="">select time-slot</div>
+        </div>
+        <div v-if="dateValue" class="mSelectedValue">
+          <div class="">{{ dateValue }}</div>
         </div>
       </div>
     </div>
+
+    <!-- overlays -->
+
+    <!-- date -->
+    <v-overlay class="overlayZIndex" :value="datePicker"
+      ><div @click="datePicker = !datePicker">
+        <i class="fas fa-times closeMonthPicker"></i>
+      </div>
+      <v-date-picker v-model="dateValue"></v-date-picker>
+      <div class="monthBtn">
+        <v-btn
+          type="submit"
+          color="primary"
+          rounded
+          dark
+          depressed
+          @click="selectMonth(dateValue)"
+        >
+          SELECT
+        </v-btn>
+      </div>
+    </v-overlay>
+    <!-- spot -->
+    <v-overlay class="overlayZIndex" :value="spotPickerToggle"
+      ><div @click="spotPickerToggle = !spotPickerToggle">
+        <i class="fas fa-times closeMonthPicker"></i>
+      </div>
+      <div class="spotCard">spot 1</div>
+      <div class="monthBtn">
+        <v-btn
+          type="submit"
+          color="primary"
+          rounded
+          dark
+          depressed
+          @click="selectMonth(dateValue)"
+        >
+          SELECT
+        </v-btn>
+      </div>
+    </v-overlay>
+    <!-- time slot -->
+    <v-overlay class="overlayZIndex" :value="spotPickerToggle"
+      ><div @click="spotPickerToggle = !spotPickerToggle">
+        <i class="fas fa-times closeMonthPicker"></i>
+      </div>
+      <div class="spotCard">spot 1</div>
+      <div class="monthBtn">
+        <v-btn
+          type="submit"
+          color="primary"
+          rounded
+          dark
+          depressed
+          @click="selectMonth(dateValue)"
+        >
+          SELECT
+        </v-btn>
+      </div>
+    </v-overlay>
   </div>
 </template>
 <script>
@@ -34,23 +103,30 @@ export default {
   data() {
     return {
       splash: true,
+      dateValue: new Date().toISOString().substr(0, 10),
+      datePicker: false,
+      spotPickerToggle: false,
+      timePickerToggle: false,
     };
   },
   created() {
     console.log(window.innerWidth);
     this.$store.commit("isMetamorphosis", true);
     this.setSplash();
-    this.backImgs();
     this.$store.commit("selectEl", "mHome");
     setTimeout(() => {
-      this.$store.commit("toggleHomeMenuColor", false);
-    }, 2000);
+      this.$store.commit("toggleHomeMenuColor", true);
+    }, 4000);
   },
   methods: {
+    selectMonth(date) {
+      this.datePicker = !this.datePicker;
+      console.log(date);
+    },
     setSplash() {
       setTimeout(() => {
         this.splash = false;
-      }, 4000);
+      }, 3000);
     },
   },
   computed: {
@@ -73,6 +149,43 @@ export default {
 };
 </script>
 <style lang="scss">
+.mFiltersBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 8000;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  background-color: #0076ff;
+}
+.mFilters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9996;
+}
+.spotCard {
+  width: 40vw;
+  height: 200px;
+  background: white;
+  border-radius: 10px;
+}
+.overlayZIndex {
+  z-index: 9999 !important;
+}
+.closeMonthPicker {
+  font-size: 25px;
+  margin: 20px;
+  cursor: pointer;
+}
+.monthBtn {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+}
 .splashText {
   color: white;
   font-size: 30px;
@@ -87,35 +200,7 @@ export default {
     outline: none !important;
   }
 }
-.mHomeBox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  position: relative;
-  z-index: 8000;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-  background-size: cover;
-}
 
-.mImgBackgroundOverlay {
-  position: absolute;
-  top: 0px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 8100;
-  // background: rgba(155, 155, 155, 0.589);
-}
-.mBackgroundOverlay {
-  position: absolute;
-  top: 0px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9997;
-  background: rgba(22, 22, 22, 0.589);
-}
 .menuEl {
   transition: 2s;
   margin: 0 10px;
@@ -290,13 +375,6 @@ export default {
     width: 28%;
   }
 }
-.mHome {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  z-index: 9996;
-}
 
 .mLine {
   width: 50px;
@@ -324,10 +402,10 @@ export default {
   position: absolute;
   top: 100px;
   width: 100vw;
-  height: calc(100vh - 100px);
+  height: 800px;
   z-index: 9996;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   .mSelectBtn {
     color: white !important;
@@ -343,11 +421,30 @@ export default {
     align-items: center;
     height: 100px;
     transition: 1s;
-    margin: 40px 0;
+    margin: 20px 0;
 
     &:hover {
       background: grey;
       transition: 1s;
+    }
+  }
+  .mSelectedValue {
+    color: white !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    font-size: 35px;
+    border: 0.5px solid white;
+    border-radius: 150px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    transition: 1s;
+    margin: 10px 0;
+    &:hover {
+      // background: grey;
+      // transition: 1s;
     }
   }
 }
@@ -365,18 +462,8 @@ export default {
 
 // ##
 @media (max-width: 1300px) {
-  .mTripartition {
-    .mTripText {
-      font-size: 40px;
-    }
-    .mLineSx {
-      margin-right: 10px;
-    }
-    .mLineDx {
-      margin-left: 10px;
-    }
-  }
 }
+
 // ##
 @media (max-width: 1050px) {
   .mTripartition {
@@ -402,6 +489,9 @@ export default {
       font-size: 21px !important;
       width: 80% !important;
     }
+  }
+  .mSelectedValue {
+    font-size: 20px !important;
   }
 }
 </style>

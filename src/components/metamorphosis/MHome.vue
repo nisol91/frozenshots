@@ -34,7 +34,6 @@ export default {
     console.log(window.innerWidth);
     this.$store.commit("isMetamorphosis", true);
     this.setSplash();
-    this.backImgs();
     this.$store.commit("selectEl", "mHome");
     setTimeout(() => {
       this.$store.commit("toggleHomeMenuColor", false);

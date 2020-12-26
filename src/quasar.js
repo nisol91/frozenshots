@@ -7,7 +7,9 @@ import '@quasar/extras/material-icons/material-icons.css'
 import {
   Quasar, Scroll, QSkeleton, QLinearProgress, QCircularProgress, QCarousel,
   QCarouselControl,
-  QCarouselSlide
+  QCarouselSlide,
+  QDialog,
+  ClosePopup
 } from 'quasar'
 
 Vue.use(Quasar, {
@@ -30,7 +32,9 @@ Vue.use(Quasar, {
   components: {
     QSkeleton, QLinearProgress, QCircularProgress, QCarousel,
     QCarouselControl,
-    QCarouselSlide
+    QCarouselSlide,
+    QDialog,
+    ClosePopup
   },
   directives: {
     Scroll
