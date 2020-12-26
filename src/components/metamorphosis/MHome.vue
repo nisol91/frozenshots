@@ -6,160 +6,17 @@
     }"
   >
     <!-- splash -->
-    <!-- <div v-if="splash" class="splash pulsate-fwd">METAMORPHOSI</div> -->
     <div v-if="splash" class="canvasBoxBabylon">
       <div class="splashText">FrozenShots</div>
-      <!-- <Scene>
-        <Property name="clearColor" color="#505050"></Property>
-        <Camera
-          type="arcRotate"
-          :properties="{ position: $vector([cameraZoom, 0, 0]) }"
-        ></Camera>
-        <Entity :position="[0, 0, 0]">
-          <Animation property="rotation.x" :duration="5">
-            <Key frame="0%" :value="0"></Key>
-            <Key frame="100%" :value="Math.PI * 2"></Key>
-          </Animation>
-          <Sphere
-            :properties="{
-              position: $vector([-0.6, -1, 0]),
-            }"
-            ><Material diffuse="#143b60"> </Material
-          ></Sphere>
-          <Sphere
-            :properties="{
-              position: $vector([0.6, 1, 0]),
-            }"
-            ><Material diffuse="#143b60"> </Material
-          ></Sphere>
-        </Entity>
-        <Entity>
-          <Animation
-            property="rotation.x"
-            :duration="5"
-            :end="Math.PI * 2"
-          ></Animation>
-          <PointLight diffuse="#F0F" :position="[0, 0, 4]"></PointLight>
-        </Entity>
-        <Entity>
-          <Animation
-            property="rotation.y"
-            :duration="5"
-            :end="Math.PI * 2"
-          ></Animation>
-          <PointLight>
-            <property name="diffuse" color="#0FF"></property>
-            <property name="position" :vector="[0, 0, 4]"></property>
-          </PointLight>
-        </Entity>
-        <Entity>
-          <Animation
-            property="rotation.z"
-            :duration="5"
-            :end="Math.PI * 2"
-          ></Animation>
-          <PointLight
-            :properties="{
-              diffuse: $color('#FF0'),
-              specular: $color({ r: 1, g: 0, b: 0 }),
-            }"
-          >
-            <property name="position" :vector="[0, 4, 0]"></property>
-          </PointLight>
-        </Entity>
-      </Scene> -->
     </div>
 
     <div v-if="!splash" class="mHome fade-in-home">
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
-
-      <!-- desktop tripartition -->
-      <!-- <div class="mTripartition">
-        <div
-          class="mTrip m1 mTripSx"
-          :class="[
-            {
-              mTripSxHover: mTripSxHover,
-              mTripHidden: mTripDxHover,
-              mShort: mTripDxHover,
-              hide: pushedAbout,
-              pushingContents: pushedContents,
-              pushingBlogOthers: pushedBlog,
-            },
-          ]"
-          :style="{
-            backgroundImage: `url(${mTripSxHover ? img_sx : ''})`,
-            backgroundSize: `cover`,
-          }"
-        >
-          <div
-            class="mTripText mTripTextSx"
-            @mouseenter="mTripSxHover = true"
-            @mouseleave="mTripSxHover = false"
-            @click="pushContents"
-          >
-            <div class="mLine mLineSx"></div>
-            WE DO
-          </div>
-        </div>
-        <div
-          class="mTrip mTripCenter m2"
-          :class="[
-            {
-              mTripCenterHover: mTripCenterHover,
-              mTripCenterHidden: mTripDxHover,
-              mTripCenterHidden_2: mTripSxHover,
-              pushingAbout: pushedAbout,
-              pushingBlogOthers: pushedBlog,
-              pushingContentsOthers: pushedContents,
-            },
-          ]"
-        >
-          <div
-            class="mTripText mTripTextCenter"
-            @mouseenter="mTripCenterHover = true"
-            @mouseleave="mTripCenterHover = false"
-            @click="pushAbout"
-          >
-            WE ARE
-          </div>
-          <div class="mLineBottom"></div>
-        </div>
-
-        <div
-          class="mTrip m3 mTripDx"
-          :class="[
-            {
-              mTripDxHover: mTripDxHover,
-              mTripHidden: mTripSxHover,
-              mShort: mTripSxHover,
-              hide: pushedAbout,
-              pushingBlog: pushedBlog,
-              pushingContentsOthers: pushedContents,
-            },
-          ]"
-          :style="{
-            backgroundImage: `url(${mTripDxHover ? img_dx : ''})`,
-            backgroundSize: `cover`,
-          }"
-        >
-          <div
-            class="mTripText mTripTextDx"
-            @mouseenter="mTripDxHover = true"
-            @mouseleave="mTripDxHover = false"
-            @click="pushBlog"
-          >
-            WE TELL
-            <div class="mLine mLineDx"></div>
-          </div>
-        </div>
-      </div> -->
-
-      <!-- mobile tripartition -->
-
       <div class="mTripartitionMobile">
-        <div class="mTripMobile" @click="pushAboutM">freeze your moments</div>
+        <router-link class="mTripMobile" :to="{ name: 'mFilters' }">
+          <div class="">freeze your moments</div>
+        </router-link>
       </div>
     </div>
   </div>
@@ -171,25 +28,6 @@ export default {
   data() {
     return {
       splash: true,
-      mTripCenterHover: false,
-      mTripDxHover: false,
-      mTripSxHover: false,
-      pushedAbout: false,
-      pushedBlog: false,
-      pushedContents: false,
-
-      backgrounds_sx: [
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/09/wavesHunters-scaled.jpg",
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/09/mare-monti-e-gabbiano-scaled.jpg",
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/09/bracco-scaled.jpg",
-      ],
-      backgrounds_dx: [
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/09/cavalli-corsa-scaled.jpg",
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/10/DSCF2935-scaled.jpg",
-        "https://endorphinoutdoor.com/wp-content/uploads/2020/06/WORDPRESSIMG-1.gif",
-      ],
-      img_sx: null,
-      img_dx: null,
     };
   },
   created() {
@@ -203,68 +41,10 @@ export default {
     }, 2000);
   },
   methods: {
-    pushAboutM() {
-      this.pushedAbout = true;
-      this.$router.push({
-        name: "mWeAre",
-        // params: { eventName: this.event.name },
-      });
-    },
-    pushBlogM() {
-      this.pushedBlog = true;
-      this.$router.push({
-        name: "mWeTell",
-        // params: { eventName: this.event.name },
-      });
-    },
-    pushContentsM() {
-      this.pushedContents = true;
-      this.$router.push({
-        name: "mWeDo",
-        // params: { eventName: this.event.name },
-      });
-    },
-    pushAbout() {
-      this.pushedAbout = true;
-      setTimeout(() => {
-        this.$router.push({
-          name: "mWeAre",
-          // params: { eventName: this.event.name },
-        });
-      }, 2000);
-    },
-    pushBlog() {
-      this.pushedBlog = true;
-      setTimeout(() => {
-        this.$router.push({
-          name: "mWeTell",
-          // params: { eventName: this.event.name },
-        });
-      }, 2000);
-    },
-    pushContents() {
-      this.pushedContents = true;
-      setTimeout(() => {
-        this.$router.push({
-          name: "mWeDo",
-          // params: { eventName: this.event.name },
-        });
-      }, 2000);
-    },
     setSplash() {
       setTimeout(() => {
         this.splash = false;
       }, 4000);
-    },
-    backImgs() {
-      setInterval(() => {
-        this.img_sx = this.backgrounds_sx[
-          Math.floor(Math.random() * this.backgrounds_sx.length)
-        ];
-        this.img_dx = this.backgrounds_dx[
-          Math.floor(Math.random() * this.backgrounds_dx.length)
-        ];
-      }, 1000);
     },
   },
   computed: {
@@ -507,7 +287,7 @@ export default {
 .mHome {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   height: 100vh;
   z-index: 9996;
 }
@@ -544,7 +324,9 @@ export default {
   justify-content: center;
   align-items: center;
   .mTripMobile {
-    color: white;
+    color: white !important;
+    text-decoration: none !important;
+
     font-weight: bold;
     font-size: 45px;
     cursor: pointer;
@@ -594,6 +376,12 @@ export default {
   .mTripartition {
     display: none;
   }
+  .mTripartitionMobile {
+    .mTripMobile {
+      font-size: 30px !important;
+      width: 60% !important;
+    }
+  }
 }
 @media (max-width: 600px) {
   .canvasBoxBabylon {
@@ -602,6 +390,12 @@ export default {
   }
   .splashText {
     left: calc(50vw - 125px);
+  }
+  .mTripartitionMobile {
+    .mTripMobile {
+      font-size: 21px !important;
+      width: 80% !important;
+    }
   }
 }
 </style>

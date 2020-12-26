@@ -63,7 +63,7 @@ const routes = [
     {
         path: "/select",
         component: MFilters,
-        name: "mFIlters",
+        name: "mFilters",
         // protezione della rotta se non loggato
         // beforeEnter: (to, from, next) => {
         //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })

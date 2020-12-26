@@ -528,6 +528,7 @@ export default {
     right: 50px;
   }
   .mTop {
+    justify-content: space-between;
     .mMenu {
       .menuEl {
         font-size: 10px;
@@ -536,6 +537,9 @@ export default {
           top: -3px;
         }
       }
+    }
+    .mLogo {
+      font-size: 15px;
     }
   }
 
@@ -547,6 +551,9 @@ export default {
       margin-left: 0px !important;
       transition: 1s;
     }
+  }
+  .mCont {
+    display: none !important;
   }
 }
 // ##
