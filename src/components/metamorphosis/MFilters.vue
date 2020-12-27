@@ -186,6 +186,7 @@ export default {
   },
   methods: {
     async getShots() {
+      this.filteredFotos = [];
       var storageRef = firebase.storage().ref();
       // Create a reference under which you want to list
       var listRef = storageRef.child(
@@ -508,9 +509,13 @@ export default {
   }
   .mSelectedValue {
     font-size: 20px !important;
+    width: 80% !important;
+  }
+  .findShotsBtn {
+    width: 80% !important;
   }
   .findShots {
-    font-size: 20px !important;
+    font-size: 18px !important;
   }
 }
 </style>
