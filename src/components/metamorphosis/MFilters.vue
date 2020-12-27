@@ -2,7 +2,7 @@
   <div
     class="mFiltersBox fade-in-home"
     :style="{
-      height: `${splash ? '100vh' : '850px'}`,
+      height: `${splash ? '100vh' : 'auto'}`,
     }"
   >
     <!-- splash -->
@@ -40,13 +40,33 @@
           class="findShotsBtn"
           @click="getShots()"
         >
-          <div class="">find your shots</div>
+          <div class="findShots">find your shots</div>
         </div> -->
         <div class="findShotsBtn" @click="getShots()">
-          <div class="">find your shots</div>
+          <div class="findShots">find your shots</div>
         </div>
       </div>
+      <div class="fotoBox">
+        <v-img
+          v-for="(foto, i) in filteredFotos"
+          :key="`foto_${i}`"
+          @click="selectFoto()"
+          :src="foto"
+          class="grey lighten-2 fotoImg"
+          :aspect-ratio="16 / 9"
+        >
+          <template v-slot:placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="grey lighten-5"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
+      </div>
     </div>
+
     <!-- ######## overlays ######## -->
 
     <!-- date -->
@@ -150,6 +170,8 @@ export default {
         "17",
         "18",
       ],
+      filteredFotos: [],
+      selectedFotos: null,
     };
   },
   created() {
@@ -166,20 +188,26 @@ export default {
     async getShots() {
       var storageRef = firebase.storage().ref();
       // Create a reference under which you want to list
-      var listRef = storageRef.child("2020_12_04_snowpark112_14");
+      var listRef = storageRef.child(
+        `${this.dateSelected}_${this.spotSelected}_${this.timeSlotSelected}`
+      );
 
       // Find all the prefixes and items.
       listRef
         .listAll()
-        .then(function (res) {
+        .then((res) => {
           console.log(res);
-          res.prefixes.forEach(function (folderRef) {
+          res.prefixes.forEach((folderRef) => {
             // All the prefixes under listRef.
             // You may call listAll() recursively on them.
           });
-          res.items.forEach(function (itemRef) {
+          res.items.forEach((itemRef) => {
             // All the items under listRef.
-            console.log(itemRef.getDownloadURL());
+            itemRef.getDownloadURL().then((url) => {
+              // Do something with the URL ...
+              console.log(url);
+              this.filteredFotos.push(url);
+            });
           });
         })
         .catch(function (error) {
@@ -229,6 +257,8 @@ export default {
 </script>
 <style lang="scss">
 .mFiltersBox {
+  width: 100%;
+  padding-top: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -244,6 +274,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   z-index: 9996;
 }
 .spotCard {
@@ -278,6 +309,20 @@ export default {
       border-radius: 3px;
       width: 90%;
     }
+  }
+}
+.fotoBox {
+  width: 95vw;
+  margin-top: 100px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  .fotoImg {
+    width: 20%;
+    border-radius: 4px;
+    margin: 10px;
   }
 }
 .slotCard {
@@ -339,208 +384,9 @@ export default {
   }
 }
 
-.menuEl {
-  transition: 2s;
-  margin: 0 10px;
-  position: relative;
-
-  &:hover {
-    text-decoration: none;
-    transition: 2s;
-    .menuLine {
-      opacity: 1;
-      transition: 0.5s;
-    }
-  }
-
-  .menuLine {
-    position: absolute;
-    top: 10px;
-    opacity: 0;
-    transition: 2s;
-    width: 100%;
-    height: 2px;
-    background: white;
-  }
-  .menuLineShow {
-    opacity: 0.7;
-    transition: 0.5s;
-  }
-}
-.mTripartition {
-  position: absolute;
-  top: 0px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9996;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .mTrip {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    padding-bottom: 100px;
-  }
-  .mTripCenter {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    padding-bottom: 0px;
-    flex-direction: column;
-    transition: 1s;
-  }
-  .mTripSx {
-    transition: 1s;
-  }
-  .mTripDx {
-    transition: 1s;
-  }
-  .mTripCenterHover {
-    background: white;
-    transition: 1s;
-    width: 60vw !important;
-  }
-  .pushingAbout {
-    width: 100vw !important;
-    transition: 1s;
-    background: white;
-    color: black;
-    .mTripTextCenter {
-      color: black;
-    }
-  }
-
-  .mTripCenterHidden,
-  .mTripCenterHidden_2 {
-    background: rgba(61, 61, 61, 0.897);
-  }
-  .mTripHidden {
-    background: rgba(0, 0, 0, 0.89);
-  }
-  .mTripDxHover,
-  .mTripSxHover {
-    background: rgba(128, 128, 128, 0.404);
-    transition: 1s;
-    width: 55vw !important;
-  }
-  .pushingBlog,
-  .pushingContents {
-    width: 100vw !important;
-    transition: 1s;
-  }
-  .pushingBlogOthers,
-  .pushingContentsOthers {
-    opacity: 0;
-    width: 10px !important;
-    transition: 1s;
-  }
-  .mTripText {
-    color: white;
-    font-weight: bold;
-    font-size: 45px;
-    cursor: pointer;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 9995;
-  }
-  .mLineSx {
-    margin-right: 30px;
-    transition: 1s;
-  }
-  .mLineDx {
-    margin-left: 30px;
-    transition: 1s;
-  }
-  .mTripTextSx {
-    justify-content: flex-start;
-    transition: 2s;
-    &:hover {
-      .mLineSx {
-        width: 300px;
-        transition: 2s;
-      }
-    }
-  }
-  .mTripTextDx {
-    justify-content: flex-end;
-    transition: 2s;
-
-    &:hover {
-      .mLineDx {
-        width: 300px;
-        transition: 2s;
-      }
-    }
-  }
-
-  .mTripTextCenter {
-    padding-bottom: 60px;
-    transition: 2s;
-    &:hover {
-      color: black;
-      transition: 2s;
-    }
-  }
-  .mLineBottom {
-    width: 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 40px;
-    border-left: 0.5px solid white;
-    border-right: 0.5px solid white;
-  }
-  .m1 {
-    width: 33%;
-    height: 100%;
-    border-right: 0.3px solid rgba(255, 255, 255, 0.507);
-  }
-
-  .m2 {
-    width: 33%;
-    height: 100%;
-    border-right: 0.3px solid rgba(255, 255, 255, 0.507);
-  }
-
-  .m3 {
-    width: 33%;
-    height: 100%;
-  }
-  .mShort {
-    width: 28%;
-  }
-}
-
-.mLine {
-  width: 50px;
-  height: 1px;
-  border-bottom: 2px solid white;
-}
-
-.splash {
-  color: white;
-  font-weight: bold;
-  font-size: 30px;
-}
-.pulsate-fwd {
-  -webkit-animation: pulsate-fwd 1.5s ease-in-out infinite both;
-  animation: pulsate-fwd 1.5s ease-in-out infinite both;
-}
-
-.fade-in-home {
-  -webkit-animation: fade-in 2s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-  animation: fade-in 2s cubic-bezier(0.39, 0.575, 0.565, 1) both;
-}
-
 .mSelectFilters {
   display: flex;
-  position: absolute;
-  top: 100px;
   width: 100vw;
-  height: 800px;
   z-index: 9996;
   flex-direction: column;
   justify-content: flex-start;
@@ -609,6 +455,9 @@ export default {
     }
   }
 }
+.findShots {
+  font-size: 35px;
+}
 .hide {
   display: none !important;
 }
@@ -637,6 +486,12 @@ export default {
     }
   }
 }
+@media (max-width: 800px) {
+  .spotCard {
+    width: 90vw !important;
+    padding: 5px;
+  }
+}
 @media (max-width: 600px) {
   .canvasBoxBabylon {
     height: 100vh;
@@ -652,6 +507,9 @@ export default {
     }
   }
   .mSelectedValue {
+    font-size: 20px !important;
+  }
+  .findShots {
     font-size: 20px !important;
   }
 }
