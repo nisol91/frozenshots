@@ -2,7 +2,7 @@
   <div
     class="mFiltersBox fade-in-home"
     :style="{
-      height: `${splash ? '100vh' : '800px'}`,
+      height: `${splash ? '100vh' : '850px'}`,
     }"
   >
     <!-- splash -->
@@ -17,32 +17,44 @@
         <div class="mSelectBtn" @click="datePicker = !datePicker">
           <div class="">select date</div>
         </div>
-        <div v-if="dateValue" class="mSelectedValue">
-          <div class="">{{ dateValue }}</div>
+        <div v-if="dateSelected" class="mSelectedValue">
+          <div class="">{{ dateSelected }}</div>
         </div>
         <div class="mSelectBtn" @click="spotPickerToggle = !spotPickerToggle">
           <div class="">select spot</div>
         </div>
-        <div v-if="dateValue" class="mSelectedValue">
-          <div class="">{{ dateValue }}</div>
+        <div v-if="spotSelected" class="mSelectedValue">
+          <div class="">{{ spotSelected }}</div>
         </div>
-        <div class="mSelectBtn" @click="timePickerToggle = !timePickerToggle">
+        <div
+          class="mSelectBtn"
+          @click="timeSlotPickerToggle = !timeSlotPickerToggle"
+        >
           <div class="">select time-slot</div>
         </div>
-        <div v-if="dateValue" class="mSelectedValue">
-          <div class="">{{ dateValue }}</div>
+        <div v-if="timeSlotSelected" class="mSelectedValue">
+          <div class="">{{ timeSlotSelected }}</div>
+        </div>
+        <!-- <div
+          v-if="dateSelected && spotSelected && timeSlotSelected"
+          class="findShotsBtn"
+          @click="getShots()"
+        >
+          <div class="">find your shots</div>
+        </div> -->
+        <div class="findShotsBtn" @click="getShots()">
+          <div class="">find your shots</div>
         </div>
       </div>
     </div>
-
-    <!-- overlays -->
+    <!-- ######## overlays ######## -->
 
     <!-- date -->
     <v-overlay class="overlayZIndex" :value="datePicker"
       ><div @click="datePicker = !datePicker">
         <i class="fas fa-times closeMonthPicker"></i>
       </div>
-      <v-date-picker v-model="dateValue"></v-date-picker>
+      <v-date-picker v-model="dateSelected"></v-date-picker>
       <div class="monthBtn">
         <v-btn
           type="submit"
@@ -50,7 +62,7 @@
           rounded
           dark
           depressed
-          @click="selectMonth(dateValue)"
+          @click="selectMonth(dateSelected)"
         >
           SELECT
         </v-btn>
@@ -61,52 +73,83 @@
       ><div @click="spotPickerToggle = !spotPickerToggle">
         <i class="fas fa-times closeMonthPicker"></i>
       </div>
-      <div class="spotCard">spot 1</div>
-      <div class="monthBtn">
-        <v-btn
-          type="submit"
-          color="primary"
-          rounded
-          dark
-          depressed
-          @click="selectMonth(dateValue)"
+      <div class="spotCard">
+        <div
+          class="spot"
+          v-for="(spot, i) in spots"
+          :key="`spot_${i}`"
+          @click="selectSpot(spot.slug)"
         >
-          SELECT
-        </v-btn>
+          <div class="spotName">
+            {{ spot.name }}
+          </div>
+          <v-img
+            v-if="spot && spot.img"
+            :src="spot.img"
+            class="grey lighten-2 spotImg"
+            :aspect-ratio="16 / 9"
+          >
+            <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+        </div>
       </div>
     </v-overlay>
     <!-- time slot -->
-    <v-overlay class="overlayZIndex" :value="spotPickerToggle"
-      ><div @click="spotPickerToggle = !spotPickerToggle">
+    <v-overlay class="overlayZIndex" :value="timeSlotPickerToggle"
+      ><div @click="timeSlotPickerToggle = !timeSlotPickerToggle">
         <i class="fas fa-times closeMonthPicker"></i>
       </div>
-      <div class="spotCard">spot 1</div>
-      <div class="monthBtn">
-        <v-btn
-          type="submit"
-          color="primary"
-          rounded
-          dark
-          depressed
-          @click="selectMonth(dateValue)"
+      <div class="slotCard">
+        <div
+          class="slot"
+          v-for="(slot, i) in timeSlots"
+          :key="`slot_${i}`"
+          @click="selectSlot(slot)"
         >
-          SELECT
-        </v-btn>
+          <div class="slotName">
+            {{ slot }}
+          </div>
+        </div>
       </div>
     </v-overlay>
   </div>
 </template>
 <script>
 import { mapState, mapGetters } from "vuex";
+import { db } from "../../main";
+import firebase from "firebase";
 
 export default {
   data() {
     return {
       splash: true,
-      dateValue: new Date().toISOString().substr(0, 10),
+      dateSelected: null,
+      spotSelected: null,
+      timeSlotSelected: null,
       datePicker: false,
       spotPickerToggle: false,
-      timePickerToggle: false,
+      timeSlotPickerToggle: false,
+      spots: null,
+      timeSlots: [
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+      ],
     };
   },
   created() {
@@ -117,8 +160,52 @@ export default {
     setTimeout(() => {
       this.$store.commit("toggleHomeMenuColor", true);
     }, 4000);
+    this.getSpots();
   },
   methods: {
+    async getShots() {
+      var storageRef = firebase.storage().ref();
+      // Create a reference under which you want to list
+      var listRef = storageRef.child("2020_12_04_snowpark112_14");
+
+      // Find all the prefixes and items.
+      listRef
+        .listAll()
+        .then(function (res) {
+          console.log(res);
+          res.prefixes.forEach(function (folderRef) {
+            // All the prefixes under listRef.
+            // You may call listAll() recursively on them.
+          });
+          res.items.forEach(function (itemRef) {
+            // All the items under listRef.
+            console.log(itemRef.getDownloadURL());
+          });
+        })
+        .catch(function (error) {
+          // Uh-oh, an error occurred!
+        });
+    },
+    async getSpots() {
+      db.collection("spots")
+        .get()
+        .then((querySnapshot) => {
+          const documents = querySnapshot.docs.map((doc) => doc.data());
+          // do something with documents
+          console.log(documents);
+          this.spots = documents;
+        });
+    },
+    selectSlot(slot) {
+      this.timeSlotPickerToggle = !this.timeSlotPickerToggle;
+      this.timeSlotSelected = slot;
+      console.log(slot);
+    },
+    selectSpot(spot) {
+      this.spotPickerToggle = !this.spotPickerToggle;
+      this.spotSelected = spot;
+      console.log(spot);
+    },
     selectMonth(date) {
       this.datePicker = !this.datePicker;
       console.log(date);
@@ -137,14 +224,6 @@ export default {
       isMetamorphosis: "isMetamorphosis",
       menu: "menu",
     }),
-    cameraZoom: function () {
-      var w = window.innerWidth;
-      if (w < 600) {
-        return 15;
-      } else {
-        return 5;
-      }
-    },
   },
 };
 </script>
@@ -168,10 +247,69 @@ export default {
   z-index: 9996;
 }
 .spotCard {
-  width: 40vw;
-  height: 200px;
+  width: 60vw;
+  height: 400px;
   background: white;
   border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  .spot {
+    color: rgb(66, 66, 66);
+    width: 40%;
+    height: 90%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 4px;
+    background: rgb(224, 224, 224);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 1s;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0px 0px 5px 4px rgba(189, 189, 189, 1);
+      transition: 1s;
+    }
+    .spotImg {
+      border-radius: 3px;
+      width: 90%;
+    }
+  }
+}
+.slotCard {
+  width: 60vw;
+  height: 400px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 30px;
+  .slot {
+    color: rgb(66, 66, 66);
+    width: 20%;
+    height: 20%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 4px;
+    background: rgb(224, 224, 224);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 1s;
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0px 0px 5px 4px rgba(189, 189, 189, 1);
+      transition: 1s;
+    }
+  }
 }
 .overlayZIndex {
   z-index: 9999 !important;
@@ -445,6 +583,29 @@ export default {
     &:hover {
       // background: grey;
       // transition: 1s;
+    }
+  }
+  .findShotsBtn {
+    color: white !important;
+    text-decoration: none !important;
+    font-weight: bold;
+    font-size: 35px;
+    border: 0.5px solid white;
+    border-radius: 150px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    transition: 1s;
+    margin: 10px 0;
+    background: rgba(214, 214, 214, 0.767);
+    transition: 1s;
+
+    cursor: pointer;
+    &:hover {
+      background: grey;
+      transition: 1s;
     }
   }
 }

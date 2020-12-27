@@ -32,7 +32,7 @@
                 include: include,
               }"
             >
-              <router-link :to="{ name: 'mHome' }" class="menuEl">
+              <!-- <router-link :to="{ name: 'mHome' }" class="menuEl">
                 <div
                   class="menuLine"
                   :class="[{ menuLineShow: menuEl.mHome.val }]"
@@ -87,7 +87,7 @@
                   WE TELL
                 </div>
               </router-link>
-              <div class="menuElDivider">/</div>
+              <div class="menuElDivider">/</div> -->
               <!-- <router-link :to="{ name: 'mShop' }" class="menuEl">
                 <div
                   class="menuLine"
@@ -102,7 +102,7 @@
                 </div>
               </router-link> -->
               <!-- <div class="menuElDivider">/</div> -->
-              <router-link :to="{ name: 'mContacts' }" class="menuEl">
+              <!-- <router-link :to="{ name: 'mContacts' }" class="menuEl">
                 <div
                   class="menuLine"
                   :class="[{ menuLineShow: menuEl.mContacts.val }]"
@@ -115,7 +115,7 @@
                   CONTACTS
                 </div>
               </router-link>
-              <div class="menuElDivider">/</div>
+              <div class="menuElDivider">/</div> -->
 
               <!-- login -->
               <router-link
@@ -471,7 +471,7 @@ export default {
   transition: 0.5s;
   display: flex;
   justify-content: space-between;
-  width: 400px;
+  width: 90px;
 }
 .showMenu {
   transition: 0.5s;
@@ -518,7 +518,7 @@ export default {
 // ##
 @media (max-width: 800px) {
   .menuOpen {
-    width: 300px;
+    // width: 300px;
     top: 80px;
   }
 
@@ -576,7 +576,7 @@ export default {
     margin-top: 5px;
   }
   .menuOpen {
-    width: 200px;
+    // width: 200px;
   }
   .showMenu,
   .showMenuLong {
