@@ -50,8 +50,8 @@
         <v-img
           v-for="(foto, i) in filteredFotos"
           :key="`foto_${i}`"
-          @click="selectFoto()"
-          :src="foto"
+          @click="fotoGalleryController(foto.id)"
+          :src="foto.src"
           class="grey lighten-2 fotoImg"
           :aspect-ratio="16 / 9"
         >
@@ -139,6 +139,42 @@
         </div>
       </div>
     </v-overlay>
+    <!-- foto gallery -->
+    <v-overlay class="overlayZIndex" :value="fotoGalleryToggle">
+      <div class="imgGalleryCard">
+        <div @click="fotoGalleryToggle = false">
+          <i class="fas fa-times closePicker"></i>
+        </div>
+        <div class="imgGallery" v-if="fotoGalleryOpenedSrc">
+          <div class="imgName">
+            {{ fotoGalleryOpenedSrc.id }}
+          </div>
+          <v-img
+            v-if="fotoGalleryOpenedSrc.src"
+            :src="fotoGalleryOpenedSrc.src"
+            class="grey lighten-2 imgGalleryImg"
+            :aspect-ratio="16 / 9"
+          >
+            <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+          <div class="imgArrows">
+            <v-icon class="imgArrow" @click="prevFotoGallery"
+              >mdi-arrow-left</v-icon
+            >
+            <v-icon class="imgArrow" @click="nextFotoGallery"
+              >mdi-arrow-right</v-icon
+            >
+          </div>
+        </div>
+      </div>
+    </v-overlay>
   </div>
 </template>
 <script>
@@ -150,12 +186,13 @@ export default {
   data() {
     return {
       splash: true,
-      dateSelected: null,
-      spotSelected: null,
-      timeSlotSelected: null,
+      dateSelected: "2020-12-04",
+      spotSelected: "snowpark112",
+      timeSlotSelected: "14",
       datePicker: false,
       spotPickerToggle: false,
       timeSlotPickerToggle: false,
+      fotoGalleryToggle: false,
       spots: null,
       timeSlots: [
         "8",
@@ -172,6 +209,7 @@ export default {
       ],
       filteredFotos: [],
       selectedFotos: null,
+      fotoGalleryOpenedSrc: null,
     };
   },
   created() {
@@ -185,6 +223,24 @@ export default {
     this.getSpots();
   },
   methods: {
+    fotoGalleryController(id) {
+      this.fotoGalleryToggle = true;
+      for (const img of this.filteredFotos) {
+        if (img.id == id) {
+          var temp = new Object();
+          temp["id"] = parseInt(img.id);
+          temp["src"] = img.src;
+          this.fotoGalleryOpenedSrc = temp;
+        }
+      }
+    },
+    nextFotoGallery() {
+      console.log(this.fotoGalleryOpenedSrc.id + 1);
+      this.fotoGalleryController(this.fotoGalleryOpenedSrc.id + 1);
+    },
+    prevFotoGallery() {
+      this.fotoGalleryController(this.fotoGalleryOpenedSrc.id - 1);
+    },
     async getShots() {
       this.filteredFotos = [];
       var storageRef = firebase.storage().ref();
@@ -204,10 +260,20 @@ export default {
           });
           res.items.forEach((itemRef) => {
             // All the items under listRef.
+
             itemRef.getDownloadURL().then((url) => {
-              // Do something with the URL ...
-              console.log(url);
-              this.filteredFotos.push(url);
+              itemRef
+                .getMetadata()
+                .then((res) => res.name)
+                .then((id) => {
+                  console.log(url);
+                  // removed file extension from file name (the file name is only the foto id)
+                  var trimmedId = id.substring(0, id.length - 4);
+                  this.filteredFotos.push({
+                    id: trimmedId,
+                    src: url,
+                  });
+                });
             });
           });
         })
@@ -312,6 +378,57 @@ export default {
     }
   }
 }
+
+.imgGalleryCard {
+  position: relative;
+  width: 90vw;
+  height: 80vh;
+  margin-top: 10vh;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  .imgGallery {
+    color: rgb(66, 66, 66);
+    width: 100%;
+    padding: 2px;
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    transition: 1s;
+
+    .imgGalleryImg {
+      margin-top: 5px;
+      border-radius: 3px;
+      width: 90%;
+      transition: 1s;
+
+      // &:hover {
+      //   box-shadow: 0px 0px 5px 4px rgba(189, 189, 189, 1);
+      //   transition: 1s;
+      // }
+    }
+    .imgName {
+      font-size: 10px;
+      text-align: center;
+    }
+    .imgArrows {
+      width: 200px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      .imgArrow {
+        color: black !important;
+        margin-top: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+}
 .fotoBox {
   width: 95vw;
   margin-top: 100px;
@@ -324,6 +441,7 @@ export default {
     width: 20%;
     border-radius: 4px;
     margin: 10px;
+    cursor: pointer;
   }
 }
 .slotCard {
@@ -364,6 +482,16 @@ export default {
   font-size: 25px;
   margin: 20px;
   cursor: pointer;
+  z-index: 9999 !important;
+}
+.closePicker {
+  font-size: 25px;
+  cursor: pointer;
+  z-index: 9999 !important;
+  color: black;
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 .monthBtn {
   display: flex;
