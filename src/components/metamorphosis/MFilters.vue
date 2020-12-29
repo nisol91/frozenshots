@@ -14,6 +14,13 @@
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
       <div class="mSelectFilters">
+        <!-- input for keyboard events -->
+        <GlobalEvents
+          @keyup.escape="escapeCloseOverlay"
+          @keyup.arrow-left="prevFotoGallery"
+          @keyup.arrow-right="nextFotoGallery"
+        />
+
         <div
           class="mSelectBtn relative-position"
           @click="datePicker = !datePicker"
@@ -106,39 +113,49 @@
       ><div @click="spotPickerToggle = !spotPickerToggle">
         <i class="fas fa-times closeMonthPicker"></i>
       </div>
-      <div class="spotCard">
-        <div
-          class="spot"
+      <carousel
+        class="spotCard"
+        :perPageCustom="[
+          [500, 1],
+          [800, 2],
+          [1024, 3],
+        ]"
+      >
+        <slide
+          class=""
           v-for="(spot, i) in spots"
           :key="`spot_${i}`"
           @click="selectSpot(spot.slug)"
         >
-          <div class="spotName">
-            {{ spot.name }}
+          <div class="spot">
+            <div class="spotName">
+              {{ spot.name }}
+            </div>
+            <v-img
+              v-if="spot && spot.img"
+              :src="spot.img"
+              class="grey lighten-2 spotImg"
+              :aspect-ratio="16 / 9"
+            >
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
           </div>
-          <v-img
-            v-if="spot && spot.img"
-            :src="spot.img"
-            class="grey lighten-2 spotImg"
-            :aspect-ratio="16 / 9"
-          >
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular
-                  indeterminate
-                  color="grey lighten-5"
-                ></v-progress-circular>
-              </v-row>
-            </template>
-          </v-img>
-        </div>
-      </div>
+        </slide>
+      </carousel>
     </v-overlay>
     <!-- time slot -->
     <v-overlay class="overlayZIndex" :value="timeSlotPickerToggle"
       ><div @click="timeSlotPickerToggle = !timeSlotPickerToggle">
         <i class="fas fa-times closeMonthPicker"></i>
       </div>
+
       <div class="slotCard">
         <div
           class="slot"
@@ -165,7 +182,7 @@
         <div
           class="imgGallery"
           v-if="fotoGalleryOpenedSrc"
-          v-touch-swipe.mouse.left="nextFotoGallery"
+          v-touch-swipe.left="nextFotoGallery"
         >
           <div class="imgName">
             {{ fotoGalleryOpenedSrc.id }}
@@ -175,7 +192,7 @@
             :src="fotoGalleryOpenedSrc.src"
             class="grey lighten-2 imgGalleryImg"
             :aspect-ratio="16 / 9"
-            v-touch-swipe.mouse.right="prevFotoGallery"
+            v-touch-swipe.right="prevFotoGallery"
           >
             <template v-slot:placeholder>
               <v-row class="fill-height ma-0" align="center" justify="center">
@@ -190,14 +207,7 @@
             <v-icon class="imgArrow" @click="prevFotoGallery"
               >mdi-arrow-left</v-icon
             >
-            <input
-              type="text"
-              @keyup.arrow-left="prevFotoGallery"
-              @keyup.arrow-right="nextFotoGallery"
-              @keyup.escape="fotoGalleryToggle = false"
-              class="inputKeyControls"
-              autofocus
-            />
+
             <v-icon class="imgArrow" @click="nextFotoGallery"
               >mdi-arrow-right</v-icon
             >
@@ -211,8 +221,16 @@
 import { mapState, mapGetters } from "vuex";
 import { db } from "../../main";
 import firebase from "firebase";
+import GlobalEvents from "vue-global-events";
+import VueCarousel from "vue-carousel";
+import { Carousel, Slide } from "vue-carousel";
 
 export default {
+  components: {
+    Carousel,
+    Slide,
+    GlobalEvents,
+  },
   data() {
     return {
       splash: true,
@@ -253,6 +271,20 @@ export default {
     this.getSpots();
   },
   methods: {
+    escapeCloseOverlay() {
+      if (this.datePicker) {
+        this.datePicker = false;
+      }
+      if (this.spotPickerToggle) {
+        this.spotPickerToggle = false;
+      }
+      if (this.timeSlotPickerToggle) {
+        this.timeSlotPickerToggle = false;
+      }
+      if (this.fotoGalleryToggle) {
+        this.fotoGalleryToggle = false;
+      }
+    },
     fotoGalleryController(id) {
       this.fotoGalleryToggle = true;
       for (const img of this.filteredFotos) {
@@ -274,6 +306,9 @@ export default {
     prevFotoGallery() {
       console.log(this.fotoGalleryOpenedSrc.id + 1);
       this.fotoGalleryController(this.fotoGalleryOpenedSrc.id - 1);
+    },
+    inputKeyFocus(ref) {
+      document.getElementById(ref).focus();
     },
     async getShots() {
       this.filteredFotos = [];
@@ -384,18 +419,16 @@ export default {
   z-index: 9996;
 }
 .spotCard {
-  width: 60vw;
-  height: 400px;
+  width: 80vw;
   background: white;
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px;
+  padding: 30px 0;
+
   .spot {
     color: rgb(66, 66, 66);
-    width: 40%;
-    height: 90%;
     padding: 10px;
     margin: 10px;
     border-radius: 4px;
@@ -667,8 +700,6 @@ export default {
 }
 @media (max-width: 800px) {
   .spotCard {
-    width: 90vw !important;
-    padding: 5px;
   }
 }
 @media (max-width: 600px) {
