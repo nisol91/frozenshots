@@ -70,7 +70,6 @@
         <v-img
           v-for="(foto, i) in filteredFotos"
           :key="`foto_${i}`"
-          @click="fotoGalleryController(foto.id)"
           :src="foto.src"
           class="grey lighten-2 fotoImg"
           :aspect-ratio="16 / 9"
@@ -83,6 +82,30 @@
               ></v-progress-circular>
             </v-row>
           </template>
+          <div class="">
+            <v-icon
+              v-if="foto.id"
+              @click="fotoGalleryController(foto.id)"
+              class="openIconMiniature"
+              >mdi-image-size-select-large</v-icon
+            >
+          </div>
+          <div class="">
+            <v-icon
+              v-if="foto && !selectedFotos.includes(foto.id)"
+              @click="selectFoto(foto.id)"
+              class="selectIconMiniature"
+              >mdi-check-circle-outline</v-icon
+            >
+          </div>
+          <div class="">
+            <v-icon
+              v-if="foto && selectedFotos.includes(foto.id)"
+              @click="deSelectFoto(foto.id)"
+              class="selectIconMiniature"
+              >mdi-check-circle</v-icon
+            >
+          </div>
         </v-img>
       </div>
     </div>
@@ -120,14 +143,14 @@
           [800, 2],
           [1024, 3],
         ]"
+        :navigationNextLabel="'▶'"
+        :navigationPrevLabel="'◀'"
+        :paginationSize="30"
+        :paginationPadding="15"
+        :paginationActiveColor="'#0F4F99'"
       >
-        <slide
-          class=""
-          v-for="(spot, i) in spots"
-          :key="`spot_${i}`"
-          @click="selectSpot(spot.slug)"
-        >
-          <div class="spot">
+        <slide class="" v-for="(spot, i) in spots" :key="`spot_${i}`">
+          <div class="spot" @click="selectSpot(spot.slug)">
             <div class="spotName">
               {{ spot.name }}
             </div>
@@ -141,7 +164,7 @@
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular
                     indeterminate
-                    color="grey lighten-5"
+                    color="black lighten-5"
                   ></v-progress-circular>
                 </v-row>
               </template>
@@ -175,8 +198,23 @@
         <div @click="fotoGalleryToggle = false">
           <i class="fas fa-times closePicker"></i>
         </div>
-        <v-icon @click="selectFoto(fotoGalleryOpenedSrc.id)" class="selectIcon"
+        <v-icon
+          v-if="
+            fotoGalleryOpenedSrc &&
+            !selectedFotos.includes(fotoGalleryOpenedSrc.id)
+          "
+          @click="selectFoto(fotoGalleryOpenedSrc.id)"
+          class="selectIcon"
           >mdi-check-circle-outline</v-icon
+        >
+        <v-icon
+          v-if="
+            fotoGalleryOpenedSrc &&
+            selectedFotos.includes(fotoGalleryOpenedSrc.id)
+          "
+          @click="deSelectFoto(fotoGalleryOpenedSrc.id)"
+          class="selectIcon"
+          >mdi-check-circle</v-icon
         >
 
         <div
@@ -256,7 +294,7 @@ export default {
         "18",
       ],
       filteredFotos: [],
-      selectedFotos: null,
+      selectedFotos: [],
       fotoGalleryOpenedSrc: null,
     };
   },
@@ -298,6 +336,15 @@ export default {
     },
     selectFoto(id) {
       console.log(id);
+      this.selectedFotos.push(id);
+    },
+    deSelectFoto(id) {
+      console.log(id);
+      for (const [i, el] of this.selectedFotos.entries()) {
+        if (el === id) {
+          this.selectedFotos.splice(i, 1);
+        }
+      }
     },
     nextFotoGallery() {
       console.log(this.fotoGalleryOpenedSrc.id + 1);
@@ -509,11 +556,41 @@ export default {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 9998 !important;
+
   .fotoImg {
     width: 20%;
     border-radius: 4px;
     margin: 10px;
     cursor: pointer;
+    z-index: 9998 !important;
+  }
+  .selectIconMiniature {
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 9999 !important;
+    color: black !important;
+    position: absolute !important;
+    top: 10px;
+    right: 10px;
+    font-size: 30px !important;
+    margin: 0 !important;
+  }
+  .openIconMiniature {
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+    cursor: pointer;
+    z-index: 9999 !important;
+    color: black !important;
+    position: absolute !important;
+    top: 10px;
+    left: 10px;
+    font-size: 30px !important;
+    margin: 0 !important;
   }
 }
 .slotCard {
