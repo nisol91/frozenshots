@@ -449,8 +449,8 @@ export default {
 .fCart {
   width: 50px;
   position: fixed;
-  top: 130px;
-  right: 30px;
+  top: 120px;
+  right: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -708,6 +708,7 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  padding-top: 50px;
   .mSelectBtn {
     color: white !important;
     text-decoration: none !important;
