@@ -92,7 +92,7 @@
           </div>
           <div class="">
             <v-icon
-              v-if="foto && !selectedFotos.includes(foto.id)"
+              v-if="foto && !selectedFotos.includes(parseInt(foto.id))"
               @click="selectFoto(foto.id)"
               class="selectIconMiniature"
               >mdi-check-circle-outline</v-icon
@@ -100,7 +100,7 @@
           </div>
           <div class="">
             <v-icon
-              v-if="foto && selectedFotos.includes(foto.id)"
+              v-if="foto && selectedFotos.includes(parseInt(foto.id))"
               @click="deSelectFoto(foto.id)"
               class="selectIconMiniature"
               >mdi-check-circle</v-icon
@@ -201,7 +201,7 @@
         <v-icon
           v-if="
             fotoGalleryOpenedSrc &&
-            !selectedFotos.includes(fotoGalleryOpenedSrc.id)
+            !selectedFotos.includes(parseInt(fotoGalleryOpenedSrc.id))
           "
           @click="selectFoto(fotoGalleryOpenedSrc.id)"
           class="selectIcon"
@@ -210,7 +210,7 @@
         <v-icon
           v-if="
             fotoGalleryOpenedSrc &&
-            selectedFotos.includes(fotoGalleryOpenedSrc.id)
+            selectedFotos.includes(parseInt(fotoGalleryOpenedSrc.id))
           "
           @click="deSelectFoto(fotoGalleryOpenedSrc.id)"
           class="selectIcon"
@@ -336,12 +336,12 @@ export default {
     },
     selectFoto(id) {
       console.log(id);
-      this.selectedFotos.push(id);
+      this.selectedFotos.push(parseInt(id));
     },
     deSelectFoto(id) {
       console.log(id);
       for (const [i, el] of this.selectedFotos.entries()) {
-        if (el === id) {
+        if (parseInt(el) === parseInt(id)) {
           this.selectedFotos.splice(i, 1);
         }
       }
