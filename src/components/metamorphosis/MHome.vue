@@ -17,7 +17,7 @@
         <router-link
           class="mTripMobile relative-position"
           :to="{ name: 'mFilters' }"
-          v-ripple="{ early: true, color: 'grey' }"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="">freeze your moments</div>
         </router-link>

@@ -5,6 +5,13 @@
       height: `${splash ? '100vh' : 'auto'}`,
     }"
   >
+    <!-- cart -->
+    <div class="fCart">
+      <div class="fCartNumber">
+        {{ selectedFotos.length }}
+      </div>
+      <v-icon class="fCartIcon">mdi-cart-outline</v-icon>
+    </div>
     <!-- splash -->
     <div v-if="splash" class="canvasBoxBabylon">
       <div class="splashText">FrozenShots</div>
@@ -24,7 +31,7 @@
         <div
           class="mSelectBtn relative-position"
           @click="datePicker = !datePicker"
-          v-ripple="{ early: true, color: 'grey' }"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="">select date</div>
         </div>
@@ -34,7 +41,7 @@
         <div
           class="mSelectBtn relative-position"
           @click="spotPickerToggle = !spotPickerToggle"
-          v-ripple="{ early: true, color: 'grey' }"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="">select spot</div>
         </div>
@@ -44,7 +51,7 @@
         <div
           class="mSelectBtn relative-position"
           @click="timeSlotPickerToggle = !timeSlotPickerToggle"
-          v-ripple="{ early: true, color: 'grey' }"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="">select time-slot</div>
         </div>
@@ -54,14 +61,14 @@
         <!-- <div
           v-if="dateSelected && spotSelected && timeSlotSelected"
           class="findShotsBtn relative-position"
-          @click="getShots()" v-ripple="{ early: true, color: 'grey' }"
+          @click="getShots()" v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="findShots">find your shots</div>
         </div> -->
         <div
           class="findShotsBtn relative-position"
           @click="getShots()"
-          v-ripple="{ early: true, color: 'grey' }"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="findShots">find your shots</div>
         </div>
@@ -439,6 +446,27 @@ export default {
 };
 </script>
 <style lang="scss">
+.fCart {
+  width: 50px;
+  position: fixed;
+  top: 130px;
+  right: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 9999;
+  border-radius: 4px;
+  padding: 3px;
+  cursor: pointer !important;
+
+  .fCartNumber,
+  .fCartIcon {
+    color: rgb(78, 82, 92) !important;
+  }
+  &:hover {
+    background: rgba(109, 109, 109, 0.493);
+  }
+}
 .inputKeyControls {
   opacity: 0;
   width: 5px;
@@ -697,7 +725,7 @@ export default {
     margin: 20px 0;
 
     &:hover {
-      background: grey;
+      background: rgba(155, 155, 155, 0.37);
       transition: 1s;
     }
   }
