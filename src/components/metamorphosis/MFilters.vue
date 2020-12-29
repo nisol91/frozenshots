@@ -14,21 +14,30 @@
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
       <div class="mSelectFilters">
-        <div class="mSelectBtn" @click="datePicker = !datePicker">
+        <div
+          class="mSelectBtn relative-position"
+          @click="datePicker = !datePicker"
+          v-ripple="{ early: true, color: 'grey' }"
+        >
           <div class="">select date</div>
         </div>
         <div v-if="dateSelected" class="mSelectedValue">
           <div class="">{{ dateSelected }}</div>
         </div>
-        <div class="mSelectBtn" @click="spotPickerToggle = !spotPickerToggle">
+        <div
+          class="mSelectBtn relative-position"
+          @click="spotPickerToggle = !spotPickerToggle"
+          v-ripple="{ early: true, color: 'grey' }"
+        >
           <div class="">select spot</div>
         </div>
         <div v-if="spotSelected" class="mSelectedValue">
           <div class="">{{ spotSelected }}</div>
         </div>
         <div
-          class="mSelectBtn"
+          class="mSelectBtn relative-position"
           @click="timeSlotPickerToggle = !timeSlotPickerToggle"
+          v-ripple="{ early: true, color: 'grey' }"
         >
           <div class="">select time-slot</div>
         </div>
@@ -37,12 +46,16 @@
         </div>
         <!-- <div
           v-if="dateSelected && spotSelected && timeSlotSelected"
-          class="findShotsBtn"
-          @click="getShots()"
+          class="findShotsBtn relative-position"
+          @click="getShots()" v-ripple="{ early: true, color: 'grey' }"
         >
           <div class="findShots">find your shots</div>
         </div> -->
-        <div class="findShotsBtn" @click="getShots()">
+        <div
+          class="findShotsBtn relative-position"
+          @click="getShots()"
+          v-ripple="{ early: true, color: 'grey' }"
+        >
           <div class="findShots">find your shots</div>
         </div>
       </div>
@@ -145,7 +158,15 @@
         <div @click="fotoGalleryToggle = false">
           <i class="fas fa-times closePicker"></i>
         </div>
-        <div class="imgGallery" v-if="fotoGalleryOpenedSrc">
+        <v-icon @click="selectFoto(fotoGalleryOpenedSrc.id)" class="selectIcon"
+          >mdi-check-circle-outline</v-icon
+        >
+
+        <div
+          class="imgGallery"
+          v-if="fotoGalleryOpenedSrc"
+          v-touch-swipe.mouse.left="nextFotoGallery"
+        >
           <div class="imgName">
             {{ fotoGalleryOpenedSrc.id }}
           </div>
@@ -154,6 +175,7 @@
             :src="fotoGalleryOpenedSrc.src"
             class="grey lighten-2 imgGalleryImg"
             :aspect-ratio="16 / 9"
+            v-touch-swipe.mouse.right="prevFotoGallery"
           >
             <template v-slot:placeholder>
               <v-row class="fill-height ma-0" align="center" justify="center">
@@ -168,6 +190,14 @@
             <v-icon class="imgArrow" @click="prevFotoGallery"
               >mdi-arrow-left</v-icon
             >
+            <input
+              type="text"
+              @keyup.arrow-left="prevFotoGallery"
+              @keyup.arrow-right="nextFotoGallery"
+              @keyup.escape="fotoGalleryToggle = false"
+              class="inputKeyControls"
+              autofocus
+            />
             <v-icon class="imgArrow" @click="nextFotoGallery"
               >mdi-arrow-right</v-icon
             >
@@ -234,11 +264,15 @@ export default {
         }
       }
     },
+    selectFoto(id) {
+      console.log(id);
+    },
     nextFotoGallery() {
       console.log(this.fotoGalleryOpenedSrc.id + 1);
       this.fotoGalleryController(this.fotoGalleryOpenedSrc.id + 1);
     },
     prevFotoGallery() {
+      console.log(this.fotoGalleryOpenedSrc.id + 1);
       this.fotoGalleryController(this.fotoGalleryOpenedSrc.id - 1);
     },
     async getShots() {
@@ -323,6 +357,11 @@ export default {
 };
 </script>
 <style lang="scss">
+.inputKeyControls {
+  opacity: 0;
+  width: 5px;
+  cursor: default;
+}
 .mFiltersBox {
   width: 100%;
   padding-top: 100px;
@@ -383,7 +422,7 @@ export default {
   position: relative;
   width: 90vw;
   height: 80vh;
-  margin-top: 10vh;
+  margin-top: 120px;
   background: white;
   border-radius: 10px;
   display: flex;
@@ -392,7 +431,7 @@ export default {
   padding: 3px;
   .imgGallery {
     color: rgb(66, 66, 66);
-    width: 100%;
+    width: 120vh;
     padding: 2px;
     margin: 2px;
     display: flex;
@@ -492,6 +531,17 @@ export default {
   position: absolute;
   top: 10px;
   left: 10px;
+}
+.selectIcon {
+  font-size: 25px;
+  cursor: pointer;
+  z-index: 9999 !important;
+  color: black !important;
+  position: absolute !important;
+  top: 10px;
+  right: 10px;
+  font-size: 30px !important;
+  margin: 0 !important;
 }
 .monthBtn {
   display: flex;

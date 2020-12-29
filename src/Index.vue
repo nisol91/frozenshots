@@ -21,7 +21,9 @@
             </router-link>
           </div>
           <router-link :to="{ name: 'mHome' }" class="mTopEl mLogo">
-            <div style="color: blue">FrozenShots</div>
+            <div style="color: blue; width: 100%; text-align: center">
+              FrozenShots
+            </div>
           </router-link>
           <div class="mTopEl mMenu" :class="[{ colorBlack: notHome }]">
             <div
@@ -394,7 +396,7 @@ export default {
   transition: 1s;
 }
 .mTop {
-  width: 100vw;
+  width: 100%;
   height: 100px;
   transition: 1s;
   display: flex;
@@ -404,7 +406,7 @@ export default {
   top: 0px;
   z-index: 9800;
   .mTopEl {
-    width: 33%;
+    width: 33.3%;
     display: flex;
     align-items: center;
   }
@@ -485,7 +487,9 @@ export default {
 
   &:hover {
     // background: rgba(52, 55, 66, 0.356);
-    margin-right: 5px;
+    // margin-right: 5px;
+    width: 60px;
+
     transition: 0.5s;
   }
   .mLineMenuCenterLine {

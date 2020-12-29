@@ -14,7 +14,11 @@
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
       <div class="mTripartitionMobile">
-        <router-link class="mTripMobile" :to="{ name: 'mFilters' }">
+        <router-link
+          class="mTripMobile relative-position"
+          :to="{ name: 'mFilters' }"
+          v-ripple="{ early: true, color: 'grey' }"
+        >
           <div class="">freeze your moments</div>
         </router-link>
       </div>
