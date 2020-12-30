@@ -58,19 +58,20 @@
         <div v-if="timeSlotSelected" class="mSelectedValue">
           <div class="">{{ timeSlotSelected }}</div>
         </div>
-        <!-- <div
-          v-if="dateSelected && spotSelected && timeSlotSelected"
-          class="findShotsBtn relative-position"
-          @click="getShots()" v-ripple="{ early: true, color: 'blue-grey-9' }"
-        >
-          <div class="findShots">find your shots</div>
-        </div> -->
         <div
+          v-if="dateSelected && spotSelected && timeSlotSelected"
           class="findShotsBtn relative-position"
           @click="getShots()"
           v-ripple="{ early: true, color: 'blue-grey-9' }"
         >
           <div class="findShots">find your shots</div>
+        </div>
+        <div
+          v-if="fotoOpened"
+          class="findShotsBtn relative-position"
+          v-ripple="{ early: true, color: 'blue-grey-9' }"
+        >
+          <div class="findShots">to basket</div>
         </div>
       </div>
       <div class="fotoBox">
@@ -269,6 +270,7 @@ import firebase from "firebase";
 import GlobalEvents from "vue-global-events";
 import VueCarousel from "vue-carousel";
 import { Carousel, Slide } from "vue-carousel";
+import _ from "lodash";
 
 export default {
   components: {
@@ -278,6 +280,7 @@ export default {
   },
   data() {
     return {
+      fotoOpened: false,
       splash: true,
       dateSelected: "2020-12-04",
       spotSelected: "snowpark112",
@@ -396,6 +399,8 @@ export default {
         .catch(function (error) {
           // Uh-oh, an error occurred!
         });
+      this.fotoOpened = true;
+      this.filteredFotos = _.orderBy(this.filteredFotos, ["id"], ["asc"]);
     },
     async getSpots() {
       db.collection("spots")
@@ -800,6 +805,17 @@ export default {
 }
 @media (max-width: 800px) {
   .spotCard {
+  }
+  .slotCard {
+    width: 90vw;
+    height: 400px;
+    padding: 5px;
+    .slot {
+      width: 27%;
+      height: 20%;
+      padding: 5px;
+      margin: 5px;
+    }
   }
 }
 @media (max-width: 600px) {
