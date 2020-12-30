@@ -301,7 +301,6 @@ export default {
         "18",
       ],
       filteredFotos: [],
-      selectedFotos: [],
       fotoGalleryOpenedSrc: null,
     };
   },
@@ -342,16 +341,10 @@ export default {
       }
     },
     selectFoto(id) {
-      console.log(id);
-      this.selectedFotos.push(parseInt(id));
+      this.$store.dispatch("selectFoto", id);
     },
     deSelectFoto(id) {
-      console.log(id);
-      for (const [i, el] of this.selectedFotos.entries()) {
-        if (parseInt(el) === parseInt(id)) {
-          this.selectedFotos.splice(i, 1);
-        }
-      }
+      this.$store.dispatch("deSelectFoto", id);
     },
     nextFotoGallery() {
       console.log(this.fotoGalleryOpenedSrc.id + 1);
@@ -441,6 +434,7 @@ export default {
       globalMessage: "globalMessage",
       isMetamorphosis: "isMetamorphosis",
       menu: "menu",
+      selectedFotos: "selectedFotos",
     }),
   },
 };

@@ -277,7 +277,7 @@ export default {
     this.$store.commit("getUserOnRefresh");
 
     // carico il carrello al refresh
-    this.$store.dispatch("loadBasketOnRefresh");
+    this.$store.commit("getSelectedFotos");
 
     // prendo l userRole nello storage
     this.$store.commit("getUserRole");

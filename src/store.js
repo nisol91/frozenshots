@@ -8,6 +8,7 @@ import router from "./routes";
 export default {
     // vuex store
     state: {
+        selectedFotos: [],
         notHome: false,
         menu: false,
         env: process.env.VUE_APP_DB_ENV,
@@ -63,6 +64,13 @@ export default {
     // le mutations hanno solo il compito di mutare lo stato dell'app, sono
     // come semplici funzioni
     mutations: {
+        getSelectedFotos(state) {
+            if (JSON.parse(localStorage.getItem('selectedFotos') != null)) {
+
+                state.selectedFotos = JSON.parse(localStorage.getItem('selectedFotos'))
+            }
+
+        },
         toggleHomeMenuColor(state, payload) {
             state.notHome = payload
         },
@@ -543,7 +551,21 @@ export default {
             // }).then(() => commit('setGlobalMessage', 'successfully created new post'))
         },
 
+        selectFoto({ commit, dispatch, state }, payload) {
+            console.log(payload);
+            state.selectedFotos.push(parseInt(payload));
+            localStorage.setItem('selectedFotos', JSON.stringify(state.selectedFotos))
 
+        },
+        deSelectFoto({ commit, dispatch, state }, payload) {
+            console.log(payload);
+            for (const [i, el] of state.selectedFotos.entries()) {
+                if (parseInt(el) === parseInt(payload)) {
+                    state.selectedFotos.splice(i, 1);
+                }
+            }
+            localStorage.setItem('selectedFotos', JSON.stringify(state.selectedFotos))
+        },
     },
     // sono come le computed properties del componente vue
     getters: {
