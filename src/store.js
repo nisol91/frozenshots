@@ -65,10 +65,13 @@ export default {
     // come semplici funzioni
     mutations: {
         getSelectedFotos(state) {
-            if (JSON.parse(localStorage.getItem('selectedFotos') != null)) {
-
+            if (JSON.parse(localStorage.getItem('selectedFotos') != [])) {
                 state.selectedFotos = JSON.parse(localStorage.getItem('selectedFotos'))
             }
+            if (JSON.parse(localStorage.getItem('selectedFotos') == null)) {
+                state.selectedFotos = []
+            }
+
 
         },
         toggleHomeMenuColor(state, payload) {
@@ -553,18 +556,22 @@ export default {
 
         selectFoto({ commit, dispatch, state }, payload) {
             console.log(payload);
-            state.selectedFotos.push(parseInt(payload));
+            state.selectedFotos.push({ id: parseInt(payload.id), src: payload.src });
             localStorage.setItem('selectedFotos', JSON.stringify(state.selectedFotos))
 
         },
         deSelectFoto({ commit, dispatch, state }, payload) {
             console.log(payload);
             for (const [i, el] of state.selectedFotos.entries()) {
-                if (parseInt(el) === parseInt(payload)) {
+                if (parseInt(el.id) === parseInt(payload)) {
                     state.selectedFotos.splice(i, 1);
                 }
             }
             localStorage.setItem('selectedFotos', JSON.stringify(state.selectedFotos))
+        },
+        clearFotoBasket({ commit, state }) {
+            state.selectedFotos = [];
+            localStorage.setItem('selectedFotos', [])
         },
     },
     // sono come le computed properties del componente vue

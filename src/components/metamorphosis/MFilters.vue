@@ -113,15 +113,25 @@
           </div>
           <div class="">
             <v-icon
-              v-if="foto && !selectedFotos.includes(parseInt(foto.id))"
-              @click="selectFoto(foto.id)"
+              v-if="
+                foto &&
+                !selectedFotos.find(
+                  (el) => parseInt(el.id) === parseInt(foto.id)
+                )
+              "
+              @click="selectFoto(foto)"
               class="selectIconMiniature"
               >mdi-check-circle-outline</v-icon
             >
           </div>
           <div class="">
             <v-icon
-              v-if="foto && selectedFotos.includes(parseInt(foto.id))"
+              v-if="
+                foto &&
+                selectedFotos.find(
+                  (el) => parseInt(el.id) === parseInt(foto.id)
+                )
+              "
               @click="deSelectFoto(foto.id)"
               class="selectIconMiniature"
               >mdi-check-circle</v-icon
@@ -222,18 +232,22 @@
         <v-icon
           v-if="
             fotoGalleryOpenedSrc &&
-            !selectedFotos.includes(parseInt(fotoGalleryOpenedSrc.id))
+            !selectedFotos.find(
+              (el) => parseInt(el.id) === parseInt(fotoGalleryOpenedSrc.id)
+            )
           "
-          @click="selectFoto(fotoGalleryOpenedSrc.id)"
+          @click="selectFoto(fotoGalleryOpenedSrc)"
           class="selectIcon"
           >mdi-check-circle-outline</v-icon
         >
         <v-icon
           v-if="
             fotoGalleryOpenedSrc &&
-            selectedFotos.includes(parseInt(fotoGalleryOpenedSrc.id))
+            selectedFotos.find(
+              (el) => parseInt(el.id) === parseInt(fotoGalleryOpenedSrc.id)
+            )
           "
-          @click="deSelectFoto(fotoGalleryOpenedSrc.id)"
+          @click="deSelectFoto(fotoGalleryOpenedSrc)"
           class="selectIcon"
           >mdi-check-circle</v-icon
         >
@@ -355,7 +369,7 @@ export default {
     fotoGalleryController(id) {
       this.fotoGalleryToggle = true;
       for (const img of this.filteredFotos) {
-        if (img.id == id) {
+        if (parseInt(img.id) == parseInt(id)) {
           var temp = new Object();
           temp["id"] = parseInt(img.id);
           temp["src"] = img.src;
@@ -363,8 +377,8 @@ export default {
         }
       }
     },
-    selectFoto(id) {
-      this.$store.dispatch("selectFoto", id);
+    selectFoto(foto) {
+      this.$store.dispatch("selectFoto", foto);
     },
     deSelectFoto(id) {
       this.$store.dispatch("deSelectFoto", id);

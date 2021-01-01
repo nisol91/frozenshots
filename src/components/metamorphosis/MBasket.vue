@@ -1,6 +1,6 @@
 <template>
   <div
-    class="basket"
+    class="basket fade-in-home"
     :style="{
       height: `${splash ? '100vh' : 'auto'}`,
     }"
@@ -19,13 +19,13 @@
       <div class="basketProd" v-for="(item, i) in basket" :key="i + 'item'">
         <div class="basketLeft">
           <div class="prodName">
-            {{ item.name }}
+            {{ item.id }}
           </div>
-          <div class="prodDescription">
+          <!-- <div class="prodDescription">
             {{ item.description }}
-          </div>
+          </div> -->
           <v-img
-            :src="item.media[0]"
+            :src="item.src"
             class="grey lighten-2 prodMedia imgBasket"
             :aspect-ratio="16 / 9"
           >
@@ -115,7 +115,7 @@ export default {
   created() {
     this.$store.commit("toggleHomePage", false);
 
-    this.basket = this.$store.state.basket.items;
+    this.basket = this.$store.state.selectedFotos;
     // console.log(this.basket);
     this.setSplash();
   },
@@ -139,7 +139,7 @@ export default {
     },
 
     clearBasket() {
-      this.$store.dispatch("clearBasket");
+      this.$store.dispatch("clearFotoBasket");
       this.basket = this.$store.state.basket.items;
     },
   },
