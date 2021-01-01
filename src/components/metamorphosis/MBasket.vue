@@ -1,0 +1,230 @@
+<template>
+  <div
+    class="basket"
+    :style="{
+      height: `${splash ? '100vh' : 'auto'}`,
+    }"
+  >
+    <div v-if="splash" class="canvasBoxBabylon">
+      <div class="splashText">FrozenShots</div>
+    </div>
+    <div class="basketBox" v-if="!splash">
+      <div class="bTitle">
+        <router-link class="btn nav-button" :to="{ name: 'mFilters' }">
+          <i class="fas fa-arrow-left"></i>
+        </router-link>
+        <div class="basketTitle">basket</div>
+      </div>
+
+      <div class="basketProd" v-for="(item, i) in basket" :key="i + 'item'">
+        <div class="basketLeft">
+          <div class="prodName">
+            {{ item.name }}
+          </div>
+          <div class="prodDescription">
+            {{ item.description }}
+          </div>
+          <v-img
+            :src="item.media[0]"
+            class="grey lighten-2 prodMedia imgBasket"
+            :aspect-ratio="16 / 9"
+          >
+            <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+          <div class="actions">
+            <v-tooltip bottom class="">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  v-on="on"
+                  class="actionIcon"
+                  @click="addItem(item.id)"
+                  >mdi-plus-box</v-icon
+                >
+              </template>
+              <span>add one</span>
+            </v-tooltip>
+            <v-tooltip bottom class="">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  v-on="on"
+                  class="actionIcon"
+                  @click="removeItem(item.id)"
+                  >mdi-minus-box</v-icon
+                >
+              </template>
+              <span>remove one</span>
+            </v-tooltip>
+            <v-tooltip bottom class="">
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  v-on="on"
+                  class="actionIcon"
+                  @click="removeFromBasket(item.id)"
+                  >mdi-delete</v-icon
+                >
+              </template>
+              <span>remove item</span>
+            </v-tooltip>
+          </div>
+          <div>quantity: {{ item.itemsNumber }}</div>
+        </div>
+
+        <div class="prodPrice">{{ item.price }}€</div>
+      </div>
+    </div>
+    <div class="checkoutBox" v-if="!splash">
+      <v-btn color="primary" rounded dark depressed @click="clearBasket">
+        clear basket
+        <v-icon class="actionIcon">mdi-basket-remove</v-icon></v-btn
+      >
+      <div class="checkTop">
+        <span class="prodName">Total items: </span>
+        <span class="prodName">{{ totalItems }}</span>
+      </div>
+      <div class="checkTop">
+        <span class="prodName">Total: </span>
+        <span class="prodName">{{ totalPrice }} €</span>
+      </div>
+
+      <router-link class="btn nav-button" :to="{ name: 'toccaVinoPayment' }">
+        <v-btn color="primary" rounded dark depressed> checkout </v-btn>
+      </router-link>
+    </div>
+  </div>
+</template>
+<script>
+import { mapState, mapGetters } from "vuex";
+
+export default {
+  data() {
+    return {
+      basket: [],
+      splash: true,
+    };
+  },
+  created() {
+    this.$store.commit("toggleHomePage", false);
+
+    this.basket = this.$store.state.basket.items;
+    // console.log(this.basket);
+    this.setSplash();
+  },
+  methods: {
+    setSplash() {
+      setTimeout(() => {
+        this.splash = false;
+      }, 3000);
+    },
+    addItem(id) {
+      this.$store.dispatch("addItemNumberToBasketItem", id);
+      this.basket = this.$store.state.basket.items;
+    },
+    removeItem(id) {
+      this.$store.dispatch("removeItemNumberFromBasketItem", id);
+      this.basket = this.$store.state.basket.items;
+    },
+    removeFromBasket(id) {
+      this.$store.dispatch("removeFromBasket", id);
+      this.basket = this.$store.state.basket.items;
+    },
+
+    clearBasket() {
+      this.$store.dispatch("clearBasket");
+      this.basket = this.$store.state.basket.items;
+    },
+  },
+  computed: {
+    ...mapState({
+      isLoggedIn: "isLoggedIn",
+      userRole: "userRole",
+      globalMessage: "globalMessage",
+    }),
+    totalPrice: function () {
+      var totalPrice = 0;
+      this.basket.forEach((el) => {
+        totalPrice += el.price * el.itemsNumber;
+      });
+      return totalPrice;
+    },
+    totalItems: function () {
+      var totalItems = 0;
+      this.basket.forEach((el) => {
+        totalItems += el.itemsNumber;
+      });
+      return totalItems;
+    },
+  },
+};
+</script>
+<style lang="scss">
+.basket {
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+  background-color: #0076ff;
+  width: 100%;
+}
+.basketTitle {
+  font-size: 25px;
+  margin-left: 50px;
+}
+.bTitle {
+  display: flex;
+}
+.basketBox {
+  width: 100%;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.basketProd {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid grey;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.basketLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.checkoutBox {
+  position: fixed;
+  top: 110px;
+  right: 10px;
+  width: 30%;
+  margin: 10px;
+  padding: 30px;
+  background: rgba(53, 58, 102, 0.349);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  .checkTop {
+    display: flex;
+    justify-content: center;
+  }
+}
+.imgBasket {
+  width: 130px;
+}
+.actions {
+  font-size: 20px;
+  .actionIcon {
+    margin: 0 10px;
+  }
+}
+</style>

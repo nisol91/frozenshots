@@ -14,13 +14,14 @@
       <div class="mImgBackgroundOverlay"></div>
       <div v-if="menu" class="mBackgroundOverlay fade-in fade-out"></div>
       <div class="mTripartitionMobile">
-        <router-link
+        <div
           class="mTripMobile relative-position"
           :to="{ name: 'mFilters' }"
-          v-ripple="{ early: true, color: 'blue-grey-9' }"
+          v-ripple="{ early: false, color: 'blue-grey-9' }"
+          @click="pushSelect"
         >
           <div class="">freeze your moments</div>
-        </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -44,6 +45,13 @@ export default {
     }, 2000);
   },
   methods: {
+    pushSelect() {
+      setTimeout(() => {
+        this.$router.push({
+          name: "mFilters",
+        });
+      }, 500);
+    },
     setSplash() {
       setTimeout(() => {
         this.splash = false;

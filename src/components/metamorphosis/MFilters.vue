@@ -6,12 +6,23 @@
     }"
   >
     <!-- cart -->
-    <div class="fCart">
+    <!-- <div class="fCart">
       <div class="fCartNumber">
         {{ selectedFotos.length }}
       </div>
       <v-icon class="fCartIcon">mdi-cart-outline</v-icon>
-    </div>
+    </div> -->
+    <router-link class="fCartLink" :to="{ name: 'mBasket' }">
+      <div
+        class="fCart relative-position"
+        v-ripple="{ early: true, color: 'blue-grey-9' }"
+      >
+        <div class="fCartNumber">
+          {{ selectedFotos.length }}
+        </div>
+        <v-icon class="fCartIcon">mdi-cart-outline</v-icon>
+      </div>
+    </router-link>
     <!-- splash -->
     <div v-if="splash" class="canvasBoxBabylon">
       <div class="splashText">FrozenShots</div>
@@ -61,15 +72,17 @@
         <div
           v-if="dateSelected && spotSelected && timeSlotSelected"
           class="findShotsBtn relative-position"
-          @click="getShots()"
-          v-ripple="{ early: true, color: 'blue-grey-9' }"
+          @click="getShots"
+          v-ripple="{ early: false, color: 'blue-grey-9' }"
         >
           <div class="findShots">find your shots</div>
         </div>
+
         <div
           v-if="fotoOpened"
           class="findShotsBtn relative-position"
-          v-ripple="{ early: true, color: 'blue-grey-9' }"
+          v-ripple="{ early: false, color: 'blue-grey-9' }"
+          @click="pushBasket"
         >
           <div class="findShots">to basket</div>
         </div>
@@ -318,6 +331,13 @@ export default {
     this.getSpots();
   },
   methods: {
+    pushBasket() {
+      setTimeout(() => {
+        this.$router.push({
+          name: "mBasket",
+        });
+      }, 500);
+    },
     escapeCloseOverlay() {
       if (this.datePicker) {
         this.datePicker = false;
@@ -445,18 +465,24 @@ export default {
 };
 </script>
 <style lang="scss">
-.fCart {
+.fCartLink {
   width: 50px;
   position: fixed;
   top: 120px;
   right: 20px;
+  z-index: 9999;
+  cursor: pointer !important;
+  &:hover {
+    text-decoration: none;
+  }
+}
+.fCart {
+  width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 9999;
   border-radius: 4px;
   padding: 3px;
-  cursor: pointer !important;
 
   .fCartNumber,
   .fCartIcon {

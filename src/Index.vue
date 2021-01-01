@@ -206,9 +206,10 @@
           </div>
         </div>
         <!--  -->
-        <transition name="fade-in">
-          <router-view></router-view>
-        </transition>
+        <!-- le transitions messe qua rallentano molto il router, meglio metterle come classe di ogni componente -->
+        <!-- <transition name="fade-in">
+        </transition> -->
+        <router-view></router-view>
 
         <!-- footer -->
         <div class="mFooter" v-if="notHome">

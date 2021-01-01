@@ -18,6 +18,8 @@ import MContacts from "./components/metamorphosis/MContacts.vue";
 import MBlogPost from "./components/metamorphosis/MBlogPost.vue";
 import MSingleWork from "./components/metamorphosis/MSingleWork.vue";
 import MFilters from "./components/metamorphosis/MFilters.vue";
+import MBasket from "./components/metamorphosis/MBasket.vue";
+
 
 
 
@@ -69,6 +71,20 @@ const routes = [
         //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })
         //     else next()
         // }
+    },
+    {
+        path: "/basket",
+        component: MBasket,
+        name: "mBasket",
+        // protezione della rotta se non loggato
+        // beforeEnter: (to, from, next) => {
+        //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })
+        //     else next()
+        // }
+        beforeEnter: (to, from, next) => {
+            window.scrollTo(0, 0);
+            next()
+        }
     },
     {
         path: "/m-we-are",
@@ -287,11 +303,11 @@ const router = new VueRouter({
 })
 
 // mi serve per scrollare sempre al top quando cambio rotta
-router.beforeEach((to, from, next) => {
-    window.scrollTo(0, 0);
+// router.beforeEach((to, from, next) => {
+//     window.scrollTo(0, 0);
 
-    // More code ...
-    next();
-});
+//     // More code ...
+//     next();
+// });
 
 export default router;
