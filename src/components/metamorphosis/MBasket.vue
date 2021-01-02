@@ -3,7 +3,9 @@
     class="basket fade-in-home"
     :style="{
       height: `${splash ? '100vh' : 'auto'}`,
+      justifyContent: `${splash ? 'center' : 'flex-start'}`,
     }"
+    v-scroll="scrolled"
   >
     <div v-if="splash" class="canvasBoxBabylon">
       <div class="splashText">FrozenShots</div>
@@ -82,7 +84,11 @@
         <div class="prodPrice">{{ item.price }}€</div>
       </div>
     </div>
-    <div class="checkoutBox" v-if="!splash">
+    <div
+      class="checkoutBox"
+      v-if="!splash"
+      :class="{ checkoutBoxScroll: scroll > 20 }"
+    >
       <v-btn color="primary" rounded dark depressed @click="clearBasket">
         clear basket
         <v-icon class="actionIcon">mdi-basket-remove</v-icon></v-btn
@@ -110,16 +116,20 @@ export default {
     return {
       basket: [],
       splash: true,
+      scroll: null,
     };
   },
   created() {
     this.$store.commit("toggleHomePage", false);
-
+    this.scroll = window.scrollY;
     this.basket = this.$store.state.selectedFotos;
     // console.log(this.basket);
     this.setSplash();
   },
   methods: {
+    scrolled(position) {
+      this.scroll = position;
+    },
     setSplash() {
       setTimeout(() => {
         this.splash = false;
@@ -182,7 +192,7 @@ export default {
   display: flex;
 }
 .basketBox {
-  width: 100%;
+  width: 50%;
   padding: 20px;
   min-height: 100vh;
   display: flex;
@@ -200,6 +210,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  width: 80%;
 }
 .checkoutBox {
   position: fixed;
@@ -219,12 +230,38 @@ export default {
   }
 }
 .imgBasket {
-  width: 130px;
+  width: 230px;
 }
 .actions {
+  margin: 20px 0;
   font-size: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
   .actionIcon {
     margin: 0 10px;
+  }
+}
+// ##
+@media (max-width: 800px) {
+  .checkoutBox {
+    position: fixed;
+    height: 200px;
+    top: 70vh;
+    right: 0px;
+    width: 100%;
+    margin: 0px;
+    padding: 30px;
+    background: rgba(53, 58, 102, 0.349);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    transition: 1s;
+  }
+  .checkoutBoxScroll {
+    transition: 1s;
+    top: 75vh;
   }
 }
 </style>
