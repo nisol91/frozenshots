@@ -1,6 +1,6 @@
 <template>
   <div class="checkoutSuccessBox">
-    <div class="cSBtn">checkout success</div>
+    <div class="cSBtn">checkout success: check your email</div>
   </div>
 </template>
 <script>
@@ -9,7 +9,7 @@ export default {
     this.$store.commit("toggleHomePage", false);
     setTimeout(() => {
       this.$store.commit("toggleHomeMenuColor", true);
-    }, 4000);
+    }, 2000);
   },
 };
 </script>

@@ -107,7 +107,7 @@ export default {
   methods: {
     processPayments() {
       this.$router.push({
-        name: "mCheckoutSuccess",
+        name: "mCheckout",
       });
     },
     scrolled(position) {

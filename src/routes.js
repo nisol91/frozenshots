@@ -20,10 +20,7 @@ import MSingleWork from "./components/metamorphosis/MSingleWork.vue";
 import MFilters from "./components/metamorphosis/MFilters.vue";
 import MBasket from "./components/metamorphosis/MBasket.vue";
 import MCheckoutSuccess from "./components/metamorphosis/MCheckoutSuccess.vue";
-
-
-
-
+import MCheckout from "./components/metamorphosis/MCheckout.vue";
 
 
 import Register from "./components/auth/Register.vue";
@@ -78,6 +75,20 @@ const routes = [
         path: "/basket",
         component: MBasket,
         name: "mBasket",
+        // protezione della rotta se non loggato
+        // beforeEnter: (to, from, next) => {
+        //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })
+        //     else next()
+        // }
+        beforeEnter: (to, from, next) => {
+            window.scrollTo(0, 0);
+            next()
+        }
+    },
+    {
+        path: "/checkout",
+        component: MCheckout,
+        name: "mCheckout",
         // protezione della rotta se non loggato
         // beforeEnter: (to, from, next) => {
         //     if (to.name !== 'login' && localStorage.getItem("isLoggedIn") === "false") next({ name: 'home' })

@@ -1,5 +1,6 @@
 module.exports = {
-    pwa: {
+	runtimeCompiler: true,
+	pwa: {
 		name: 'NsZDevStudio',
 		themeColor: '#4DBA87',
 		msTileColor: '#000000',
@@ -36,14 +37,14 @@ module.exports = {
 		// }
 	},
 
-    pluginOptions: {
-      quasar: {
-        importStrategy: 'kebab',
-        rtlSupport: false
-      }
-    },
+	pluginOptions: {
+		quasar: {
+			importStrategy: 'kebab',
+			rtlSupport: false
+		}
+	},
 
-    transpileDependencies: [
-      'quasar'
-    ]
+	transpileDependencies: [
+		'quasar'
+	]
 }

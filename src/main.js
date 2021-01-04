@@ -53,12 +53,11 @@ import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
-
-
 // lodash e axios li importo per singolo componente all'occorrenza
 /* import axios from "axios";
 import _ from "lodash"; */
 import './quasar'
+
 
 Vue.use(window.VueBabylonjs);
 Vue.use(require('vue-faker'));
