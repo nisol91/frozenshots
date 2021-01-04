@@ -47,30 +47,6 @@
                   v-bind="attrs"
                   v-on="on"
                   class="actionIcon"
-                  @click="addItem(item.id)"
-                  >mdi-plus-box</v-icon
-                >
-              </template>
-              <span>add one</span>
-            </v-tooltip>
-            <v-tooltip bottom class="">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  v-bind="attrs"
-                  v-on="on"
-                  class="actionIcon"
-                  @click="removeItem(item.id)"
-                  >mdi-minus-box</v-icon
-                >
-              </template>
-              <span>remove one</span>
-            </v-tooltip>
-            <v-tooltip bottom class="">
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  v-bind="attrs"
-                  v-on="on"
-                  class="actionIcon"
                   @click="removeFromBasket(item.id)"
                   >mdi-delete</v-icon
                 >
@@ -78,10 +54,9 @@
               <span>remove item</span>
             </v-tooltip>
           </div>
-          <div>quantity: {{ item.itemsNumber }}</div>
         </div>
 
-        <div class="prodPrice">{{ item.price }}€</div>
+        <div class="prodPrice">{{ strandardPrice }}€</div>
       </div>
     </div>
     <div
@@ -95,16 +70,18 @@
       >
       <div class="checkTop">
         <span class="prodName">Total items: </span>
-        <span class="prodName">{{ totalItems }}</span>
+        <span class="prodName">{{ this.basket.length }}</span>
       </div>
       <div class="checkTop">
-        <span class="prodName">Total: </span>
+        <span class="prodName">Total price: </span>
         <span class="prodName">{{ totalPrice }} €</span>
       </div>
 
-      <router-link class="btn nav-button" :to="{ name: 'toccaVinoPayment' }">
-        <v-btn color="primary" rounded dark depressed> checkout </v-btn>
-      </router-link>
+      <div class="checkoutBtnBox btn nav-btn" @click="processPayments">
+        <v-btn color="primary" rounded dark depressed class="checkoutBtn">
+          checkout
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -117,6 +94,7 @@ export default {
       basket: [],
       splash: true,
       scroll: null,
+      strandardPrice: 5,
     };
   },
   created() {
@@ -127,6 +105,11 @@ export default {
     this.setSplash();
   },
   methods: {
+    processPayments() {
+      this.$router.push({
+        name: "mCheckoutSuccess",
+      });
+    },
     scrolled(position) {
       this.scroll = position;
     },
@@ -135,17 +118,9 @@ export default {
         this.splash = false;
       }, 3000);
     },
-    addItem(id) {
-      this.$store.dispatch("addItemNumberToBasketItem", id);
-      this.basket = this.$store.state.basket.items;
-    },
-    removeItem(id) {
-      this.$store.dispatch("removeItemNumberFromBasketItem", id);
-      this.basket = this.$store.state.basket.items;
-    },
+
     removeFromBasket(id) {
-      this.$store.dispatch("removeFromBasket", id);
-      this.basket = this.$store.state.basket.items;
+      this.$store.dispatch("deSelectFoto", id);
     },
 
     clearBasket() {
@@ -162,16 +137,9 @@ export default {
     totalPrice: function () {
       var totalPrice = 0;
       this.basket.forEach((el) => {
-        totalPrice += el.price * el.itemsNumber;
+        totalPrice += this.strandardPrice * 1;
       });
       return totalPrice;
-    },
-    totalItems: function () {
-      var totalItems = 0;
-      this.basket.forEach((el) => {
-        totalItems += el.itemsNumber;
-      });
-      return totalItems;
     },
   },
 };
@@ -185,8 +153,9 @@ export default {
   width: 100%;
 }
 .basketTitle {
-  font-size: 25px;
+  font-size: 28px;
   margin-left: 50px;
+  font-weight: bold;
 }
 .bTitle {
   display: flex;
@@ -202,7 +171,7 @@ export default {
   width: 90%;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid grey;
+  border-bottom: 2px solid #474343;
   padding: 10px;
   margin-bottom: 10px;
 }
@@ -210,13 +179,13 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 80%;
+  width: 90%;
 }
 .checkoutBox {
   position: fixed;
   top: 110px;
   right: 10px;
-  width: 30%;
+  width: 45%;
   margin: 10px;
   padding: 30px;
   background: rgba(53, 58, 102, 0.349);
@@ -226,7 +195,15 @@ export default {
   flex-direction: column;
   .checkTop {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+.checkoutBtnBox {
+  width: 100%;
+  .checkoutBtn {
+    width: 100%;
   }
 }
 .imgBasket {
@@ -239,29 +216,37 @@ export default {
   display: flex;
   justify-content: flex-start;
   .actionIcon {
-    margin: 0 10px;
+    margin: 0 10px 0 0;
   }
 }
 // ##
 @media (max-width: 800px) {
   .checkoutBox {
     position: fixed;
-    height: 200px;
-    top: 70vh;
+    height: auto;
+    top: 66vh;
     right: 0px;
     width: 100%;
     margin: 0px;
-    padding: 30px;
+    padding: 10px;
     background: rgba(53, 58, 102, 0.349);
     border-radius: 4px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-direction: column;
     transition: 1s;
+    .checkTop {
+      margin: 3px 0;
+    }
   }
   .checkoutBoxScroll {
     transition: 1s;
-    top: 75vh;
+    top: 68vh;
+  }
+  .basketBox {
+    width: 100%;
+    padding: 20px;
+    padding-bottom: 250px;
   }
 }
 </style>
