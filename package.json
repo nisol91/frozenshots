@@ -36,6 +36,7 @@
     "vue-mapbox-geocoder": "^0.2.0",
     "vue-moment": "^4.1.0",
     "vue-social-sharing": "^3.0.4",
+    "vue-stripe-checkout": "^3.5.14-beta.0",
     "vue-template-compiler": "^2.6.10",
     "vuefire": "^2.2.4"
   },
