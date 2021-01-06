@@ -49,7 +49,7 @@
         id="paypal-button-container"
         class="payPalPayments"
         ref="paypal"
-        :class="{ hide: !pay }"
+        :class="{ hide: !pay || !product.price }"
       ></div>
       <div class="">
         <i class="iconCard fab fa-cc-visa"></i
@@ -93,7 +93,7 @@ export default {
       loaded: false,
       paidFor: false,
       product: {
-        price: 0,
+        price: null,
         description: "your fotos",
         img: "",
       },
@@ -124,7 +124,9 @@ export default {
       // salva ordine su firestore - state
       this.$store.dispatch("saveFotoOrder", this.orderData);
       // genera url di scaricamento
+
       // bottone con url di scaricamento
+
       // invia mail con bottone con url di scaricamento
     },
     checkForm() {
@@ -169,6 +171,7 @@ export default {
             const order = await actions.order.capture();
             this.paidFor = true;
             console.log(order);
+            this.orderData = order;
             this.saveOrderAndProceed();
           },
           onError: (err) => {
@@ -183,6 +186,7 @@ export default {
 <style lang="scss">
 .paySuccessBox {
   width: 100%;
+  padding: 3vw;
   display: flex;
   justify-content: center;
   flex-direction: column;
