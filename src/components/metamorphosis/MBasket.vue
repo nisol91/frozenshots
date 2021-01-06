@@ -18,6 +18,7 @@
         <div class="basketTitle">basket</div>
       </div>
 
+      <div v-if="!basket.length" class="noItems">no items in basket</div>
       <div class="basketProd" v-for="(item, i) in basket" :key="i + 'item'">
         <div class="basketLeft">
           <div class="prodName">
@@ -77,8 +78,24 @@
         <span class="prodName">{{ totalPrice }} €</span>
       </div>
 
-      <div class="checkoutBtnBox btn nav-btn" @click="processPayments">
+      <div
+        v-if="basket.length"
+        class="checkoutBtnBox btn nav-btn"
+        @click="processPayments"
+      >
         <v-btn color="primary" rounded dark depressed class="checkoutBtn">
+          checkout
+        </v-btn>
+      </div>
+      <div v-if="!basket.length" class="checkoutBtnBox btn nav-btn">
+        <v-btn
+          color="primary"
+          disabled
+          rounded
+          dark
+          depressed
+          class="checkoutBtn"
+        >
           checkout
         </v-btn>
       </div>
@@ -106,6 +123,7 @@ export default {
   },
   methods: {
     processPayments() {
+      this.$store.commit("setFinalPrice", this.totalPrice);
       this.$router.push({
         name: "mCheckout",
       });
@@ -121,11 +139,12 @@ export default {
 
     removeFromBasket(id) {
       this.$store.dispatch("deSelectFoto", id);
+      this.basket = this.$store.state.selectedFotos;
     },
 
     clearBasket() {
       this.$store.dispatch("clearFotoBasket");
-      this.basket = this.$store.state.basket.items;
+      this.basket = this.$store.state.selectedFotos;
     },
   },
   computed: {
@@ -145,6 +164,12 @@ export default {
 };
 </script>
 <style lang="scss">
+.noItems {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
 .basket {
   display: flex;
   justify-content: center;
