@@ -400,6 +400,8 @@ export default {
       // Create a reference under which you want to list
       var listRef = storageRef.child(
         `${this.dateSelected}_${this.spotSelected}_${this.timeSlotSelected}`
+        // in produzione sarebbe:
+        // `${this.dateSelected}_${this.spotSelected}_${this.timeSlotSelected}_W`
       );
 
       // Find all the prefixes and items.

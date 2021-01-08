@@ -82,11 +82,16 @@
 </template>
 
 <script>
+import firebase from "firebase";
+import _ from "lodash";
+import { mapState, mapGetters } from "vuex";
+
 export default {
   name: "HelloWorld",
 
   data: function () {
     return {
+      fotoUrls: [],
       email: "",
       errors: [],
       pay: false,
@@ -101,6 +106,7 @@ export default {
     };
   },
   created() {
+    this.getDownloadShots();
     this.product.price = this.$store.state.finalPrice;
 
     this.$store.commit("toggleHomePage", false);
@@ -123,11 +129,86 @@ export default {
       this.$store.dispatch("clearFotoBasket");
       // salva ordine su firestore - state
       this.$store.dispatch("saveFotoOrder", this.orderData);
-      // genera url di scaricamento
+      // genera url di scaricamento - dovrebbe essere possibile la ricerca generale per id nel nome del file, se no come faccio?
 
       // bottone con url di scaricamento
 
       // invia mail con bottone con url di scaricamento
+    },
+    async getDownloadShots() {
+      console.log(this.selectedFotos);
+      this.fotoUrls = [];
+      var storageRef = firebase.storage().ref();
+      // Create a reference under which you want to list
+      var listRef = storageRef.child(`frozen_O`);
+
+      // Find all the prefixes and items.
+      listRef
+        .listAll()
+        .then((res) => {
+          console.log(res);
+          res.prefixes.forEach((folderRef) => {
+            // All the prefixes under listRef.
+            // You may call listAll() recursively on them.
+            folderRef.listAll().then((res) => {
+              console.log(res);
+              res.prefixes.forEach((folderRef) => {
+                // All the prefixes under listRef.
+                // You may call listAll() recursively on them.
+              });
+              res.items.forEach((itemRef) => {
+                // All the items under listRef.
+                // console.log(itemRef);
+
+                itemRef.getDownloadURL().then((url) => {
+                  itemRef
+                    .getMetadata()
+                    .then((res) => res.name)
+                    .then((id) => {
+                      console.log(url);
+                      // removed file extension from file name (the file name is only the foto id)
+                      var trimmedId = id.substring(0, id.length - 4);
+                      console.log(trimmedId);
+                      // this.filteredFotos.push({
+                      //   id: trimmedId,
+                      //   src: url,
+                      // });
+                      this.selectedFotos.forEach((selFot) => {
+                        if (parseInt(selFot.id) === parseInt(trimmedId)) {
+                          console.log("selectedid" + trimmedId);
+                        }
+                      });
+                    });
+                });
+              });
+            });
+          });
+          // cicla eventuali files dentro alla cartella principale frozen_O
+          res.items.forEach((itemRef) => {
+            // All the items under listRef.
+            // console.log(itemRef);
+            // itemRef.getDownloadURL().then((url) => {
+            //   itemRef
+            //     .getMetadata()
+            //     .then((res) => res.name)
+            //     .then((id) => {
+            //       console.log(url);
+            //       // removed file extension from file name (the file name is only the foto id)
+            //       var trimmedId = id.substring(0, id.length - 4);
+            //       console.log(trimmedId);
+            //       // this.filteredFotos.push({
+            //       //   id: trimmedId,
+            //       //   src: url,
+            //       // });
+            //     });
+            // });
+          });
+        })
+        .catch(function (error) {
+          // Uh-oh, an error occurred!
+        });
+      this.fotoOpened = true;
+      this.filteredFotos = _.orderBy(this.filteredFotos, ["id"], ["asc"]);
     },
     checkForm() {
       this.errors = [];
@@ -180,6 +261,11 @@ export default {
         })
         .render(this.$refs.paypal);
     },
+  },
+  computed: {
+    ...mapState({
+      selectedFotos: "selectedFotos",
+    }),
   },
 };
 </script>
