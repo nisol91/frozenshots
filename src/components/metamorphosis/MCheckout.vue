@@ -40,6 +40,16 @@
         >
           ok, pay
         </v-btn>
+        <v-btn
+          color="primary"
+          rounded
+          dark
+          depressed
+          class="payBtn"
+          @click="downloadFotos"
+        >
+          test download
+        </v-btn>
       </form>
       <div v-if="!paidFor">
         <h1 class="amountPay">Total amount - ${{ product.price }}</h1>
@@ -85,9 +95,10 @@
 import firebase from "firebase";
 import _ from "lodash";
 import { mapState, mapGetters } from "vuex";
+import { FileSaver, saveAs } from "file-saver";
 
 export default {
-  name: "HelloWorld",
+  name: "checkout",
 
   data: function () {
     return {
@@ -135,6 +146,12 @@ export default {
 
       // invia mail con bottone con url di scaricamento
     },
+    downloadFotos() {
+      for (const foto of this.fotoUrls) {
+        window.open(foto.src);
+        FileSaver.saveAs(foto.src, "image.jpg");
+      }
+    },
     async getDownloadShots() {
       console.log(this.selectedFotos);
       this.fotoUrls = [];
@@ -168,14 +185,14 @@ export default {
                       console.log(url);
                       // removed file extension from file name (the file name is only the foto id)
                       var trimmedId = id.substring(0, id.length - 4);
-                      console.log(trimmedId);
-                      // this.filteredFotos.push({
-                      //   id: trimmedId,
-                      //   src: url,
-                      // });
+
                       this.selectedFotos.forEach((selFot) => {
                         if (parseInt(selFot.id) === parseInt(trimmedId)) {
-                          console.log("selectedid" + trimmedId);
+                          console.log("selectedid ->" + trimmedId);
+                          this.fotoUrls.push({
+                            // id: trimmedId,
+                            src: url,
+                          });
                         }
                       });
                     });
