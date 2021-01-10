@@ -40,16 +40,22 @@
         >
           ok, pay
         </v-btn>
-        <v-btn
-          color="primary"
-          rounded
-          dark
-          depressed
-          class="payBtn"
-          @click="downloadFotos"
-        >
-          test download
-        </v-btn>
+
+        <div class="downloadLinks">
+          <v-btn
+            color="primary"
+            rounded
+            dark
+            depressed
+            class="downloadBtn"
+            v-for="(foto, i) in fotoUrls"
+            :key="i + 'download_img'"
+          >
+            <a :href="foto.src" download target="_blank"
+              >download {{ foto.id }}</a
+            >
+          </v-btn>
+        </div>
       </form>
       <div v-if="!paidFor">
         <h1 class="amountPay">Total amount - ${{ product.price }}</h1>
@@ -95,7 +101,9 @@
 import firebase from "firebase";
 import _ from "lodash";
 import { mapState, mapGetters } from "vuex";
-import { FileSaver, saveAs } from "file-saver";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import axios from "axios";
 
 export default {
   name: "checkout",
@@ -146,12 +154,7 @@ export default {
 
       // invia mail con bottone con url di scaricamento
     },
-    downloadFotos() {
-      for (const foto of this.fotoUrls) {
-        window.open(foto.src);
-        FileSaver.saveAs(foto.src, "image.jpg");
-      }
-    },
+
     async getDownloadShots() {
       console.log(this.selectedFotos);
       this.fotoUrls = [];
@@ -190,7 +193,7 @@ export default {
                         if (parseInt(selFot.id) === parseInt(trimmedId)) {
                           console.log("selectedid ->" + trimmedId);
                           this.fotoUrls.push({
-                            // id: trimmedId,
+                            id: trimmedId,
                             src: url,
                           });
                         }
@@ -287,6 +290,15 @@ export default {
 };
 </script>
 <style lang="scss">
+.downloadLinks {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.downloadBtn {
+  margin: 0 10px;
+}
 .paySuccessBox {
   width: 100%;
   padding: 3vw;
